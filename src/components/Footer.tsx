@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Linkedin, Twitter, Github } from "lucide-react";
+import { Linkedin, Twitter, Github, Mail } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -15,6 +15,15 @@ const Footer = () => {
             <p className="text-sm text-white/70 leading-relaxed">
               Helping professionals optimize their LinkedIn profiles to stand out to recruiters and advance their careers.
             </p>
+            <div className="flex items-center space-x-2">
+              <Mail className="h-4 w-4 text-primary" />
+              <a 
+                href="mailto:dishagiri09170@gmail.com" 
+                className="text-sm text-white/70 hover:text-white transition-colors"
+              >
+                dishagiri09170@gmail.com
+              </a>
+            </div>
           </div>
 
           {/* Quick Links */}
@@ -74,8 +83,8 @@ const Footer = () => {
             <p className="text-sm text-white/70">
               Disha Giri<br />
               LinkedIn Profile Optimization Specialist<br />
-              <a href="mailto:contact@profileenhancehub.com" className="hover:text-white transition-colors">
-                contact@profileenhancehub.com
+              <a href="mailto:dishagiri09170@gmail.com" className="hover:text-white transition-colors">
+                dishagiri09170@gmail.com
               </a>
             </p>
           </div>

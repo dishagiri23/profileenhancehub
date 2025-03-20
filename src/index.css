@@ -25,6 +25,7 @@
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
     --radius: 0.5rem;
+    --linkedin: 195 100% 40%;
   }
 }
 
@@ -67,6 +68,16 @@
   .link-underline {
     @apply relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100;
   }
+  
+  .text-linkedin {
+    @apply text-[#0A66C2];
+  }
+  
+  @media (max-width: 1023px) {
+    .lg\:relative.z-50 {
+      z-index: 50 !important;
+    }
+  }
 }
 
 /* Custom scrollbar for webkit browsers */
@@ -103,4 +114,65 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Utility for LinkedIn color */
+.border-linkedin {
+  border-color: #0A66C2;
+}
+
+.bg-linkedin {
+  background-color: #0A66C2;
+}
+
+/* Fix sidebar overlap issues */
+@media (max-width: 1023px) {
+  aside.fixed.z-50 {
+    z-index: 50 !important;
+  }
+  
+  nav.fixed.z-40 {
+    z-index: 40 !important;
+  }
+}
+
+/* Improve mobile responsiveness */
+@media (max-width: 639px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  h1.text-4xl {
+    font-size: 2rem;
+  }
+  
+  h2.text-3xl {
+    font-size: 1.75rem;
+  }
+  
+  .glass-card {
+    padding: 1.25rem;
+  }
+}
+
+/* Fix for sidebar optimization tools and header */
+@media (max-width: 767px) {
+  aside .h-16 .text-xl {
+    font-size: 1.1rem;
+  }
+}
+
+/* Pulse animation for LinkedIn icon */
+@keyframes pulse-soft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
 }

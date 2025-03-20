@@ -7,6 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Github, Linkedin, MailIcon, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,38 +22,176 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [isResetting, setIsResetting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate login
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    toast({
-      title: "Login successful",
-      description: "Welcome back to ProfileEnhanceHub!",
-      duration: 3000,
-    });
-    
-    navigate("/dashboard");
-    setIsLoading(false);
+    try {
+      // Validate input
+      if (!email || !password) {
+        toast({
+          title: "Error",
+          description: "Please enter both email and password",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast({
+          title: "Invalid email",
+          description: "Please enter a valid email address",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+      
+      // Check if user exists in localStorage
+      const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+      const user = storedUsers.find((u: any) => u.email === email);
+      
+      if (!user) {
+        toast({
+          title: "Account not found",
+          description: "No account found with this email. Please sign up.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+      
+      // Check password
+      if (user.password !== password) {
+        toast({
+          title: "Incorrect password",
+          description: "The password you entered is incorrect",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+      
+      // Save user data to localStorage
+      const userData = {
+        name: user.name,
+        email: user.email,
+        profileUrl: user.profileUrl || "",
+        imageUrl: user.imageUrl || "",
+        signUpMethod: "Email"
+      };
+      
+      localStorage.setItem("userData", JSON.stringify(userData));
+      
+      toast({
+        title: "Login successful",
+        description: "Welcome back to ProfileEnhanceHub!",
+        duration: 3000,
+      });
+      
+      navigate("/dashboard");
+    } catch (error) {
+      toast({
+        title: "Login failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSocialLogin = async (provider: string) => {
     setIsLoading(true);
     
-    // Simulate social login
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Create mock user data for demo purposes
+      const userData = {
+        name: `User via ${provider}`,
+        email: email || `user_${Date.now()}@${provider.toLowerCase()}.example.com`,
+        profileUrl: "",
+        imageUrl: "",
+        signUpMethod: provider
+      };
+      
+      localStorage.setItem("userData", JSON.stringify(userData));
+      
+      toast({
+        title: `${provider} login successful`,
+        description: "Welcome to ProfileEnhanceHub!",
+        duration: 3000,
+      });
+      
+      navigate("/dashboard");
+    } catch (error) {
+      toast({
+        title: "Login failed",
+        description: `Could not login with ${provider}. Please try again.`,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsResetting(true);
     
-    toast({
-      title: `${provider} login successful`,
-      description: "Welcome to ProfileEnhanceHub!",
-      duration: 3000,
-    });
-    
-    navigate("/dashboard");
-    setIsLoading(false);
+    try {
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(resetEmail)) {
+        toast({
+          title: "Invalid email",
+          description: "Please enter a valid email address",
+          variant: "destructive",
+        });
+        setIsResetting(false);
+        return;
+      }
+      
+      // Check if user exists
+      const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+      const userExists = storedUsers.some((u: any) => u.email === resetEmail);
+      
+      if (!userExists) {
+        toast({
+          title: "Account not found",
+          description: "No account found with this email",
+          variant: "destructive",
+        });
+        setIsResetting(false);
+        return;
+      }
+      
+      // Simulate sending reset email
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      toast({
+        title: "Reset link sent",
+        description: "Check your email for password reset instructions",
+        duration: 5000,
+      });
+      
+      setForgotPasswordOpen(false);
+      setResetEmail("");
+    } catch (error) {
+      toast({
+        title: "Password reset failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResetting(false);
+    }
   };
 
   return (
@@ -146,9 +292,14 @@ const Login = () => {
                 <label htmlFor="password" className="block text-sm font-medium text-white/70">
                   Password
                 </label>
-                <a href="#" className="text-xs text-primary hover:text-primary/80 transition-colors">
+                <Button 
+                  type="button" 
+                  variant="link" 
+                  className="text-xs text-primary hover:text-primary/80 transition-colors p-0 h-auto"
+                  onClick={() => setForgotPasswordOpen(true)}
+                >
                   Forgot password?
-                </a>
+                </Button>
               </div>
               <Input
                 id="password"
@@ -178,6 +329,54 @@ const Login = () => {
           </div>
         </div>
       </motion.div>
+      
+      {/* Forgot Password Dialog */}
+      <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
+        <DialogContent className="bg-black/90 border border-white/10 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-white">Reset Password</DialogTitle>
+            <DialogDescription className="text-white/70">
+              Enter your email address and we'll send you a link to reset your password.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleForgotPassword}>
+            <div className="space-y-4 py-2">
+              <div className="space-y-2">
+                <label htmlFor="reset-email" className="text-sm font-medium text-white/70">
+                  Email Address
+                </label>
+                <Input
+                  id="reset-email"
+                  type="email"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  className="bg-white/5 border-white/10 text-white focus-visible:ring-primary/40"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+            </div>
+            <DialogFooter className="mt-4">
+              <Button
+                type="button"
+                variant="outline"
+                className="bg-white/5 border-white/10 text-white"
+                onClick={() => setForgotPasswordOpen(false)}
+                disabled={isResetting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="bg-primary hover:bg-primary/90 text-white"
+                disabled={isResetting}
+              >
+                {isResetting ? "Sending..." : "Send Reset Link"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -1,8 +1,10 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, ChevronRight, User, Image, PenTool, GraduationCap, Briefcase, Star, Link, Users, MessageSquare, Search, Award, UserPlus, Bell } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -10,7 +12,102 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const [profileUrl, setProfileUrl] = useState("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  useEffect(() => {
+    // Check if user is logged in
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleAnalyzeProfile = () => {
+    // Validate URL
+    if (!profileUrl) {
+      toast({
+        title: "URL required",
+        description: "Please enter your LinkedIn profile URL",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Simple LinkedIn URL validation
+    const isLinkedInUrl = profileUrl.includes("linkedin.com/");
+    if (!isLinkedInUrl) {
+      toast({
+        title: "Invalid URL",
+        description: "Please enter a valid LinkedIn profile URL",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Check if logged in
+    if (!isLoggedIn) {
+      toast({
+        title: "Login required",
+        description: "Please log in to analyze your profile",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+    
+    setIsAnalyzing(true);
+    
+    // Simulate analysis
+    setTimeout(() => {
+      setIsAnalyzing(false);
+      
+      // Save URL to localStorage
+      const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+      userData.profileUrl = profileUrl;
+      localStorage.setItem("userData", JSON.stringify(userData));
+      
+      toast({
+        title: "Profile analyzed!",
+        description: "Check the sections below for optimization suggestions",
+      });
+      
+      // Close sidebar on mobile after analysis
+      if (window.innerWidth < 1024) {
+        setIsOpen(false);
+      }
+    }, 2000);
+  };
+
+  const handleSectionItemClick = (section: string, subsection: string) => {
+    // Check if logged in
+    if (!isLoggedIn) {
+      toast({
+        title: "Login required",
+        description: "Please log in to access this feature",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+    
+    // Simulate loading optimization tool
+    toast({
+      title: `Loading ${subsection}`,
+      description: "Preparing optimization suggestions...",
+    });
+    
+    // Navigate to appropriate service section with query params
+    navigate(`/services?section=${section}&subsection=${subsection}`);
+    
+    // Close sidebar on mobile after selection
+    if (window.innerWidth < 1024) {
+      setIsOpen(false);
+    }
+  };
 
   const sidebarSections = [
     {
@@ -104,10 +201,16 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
               className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-md text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             />
             <button 
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+              className={`absolute right-2 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white transition-colors ${isAnalyzing ? 'pointer-events-none' : ''}`}
               aria-label="Analyze profile"
+              onClick={handleAnalyzeProfile}
+              disabled={isAnalyzing}
             >
-              <ChevronRight className="h-5 w-5" />
+              {isAnalyzing ? (
+                <div className="h-5 w-5 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+              ) : (
+                <ChevronRight className="h-5 w-5" />
+              )}
             </button>
           </div>
 
@@ -127,12 +230,24 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
                         <li key={subsection.id}>
                           <button
                             className="w-full flex items-center px-4 py-2 text-sm text-white/70 hover:text-white hover:bg-white/5 rounded-md transition-all"
+                            onClick={() => handleSectionItemClick(section.id, subsection.id)}
                           >
                             <subsection.icon className="mr-2 h-4 w-4 text-primary/80" />
                             <span>{subsection.title}</span>
                           </button>
                         </li>
                       ))}
+                      {section.subsections.length === 0 && section.id === "certifications" && (
+                        <li>
+                          <button
+                            className="w-full flex items-center px-4 py-2 text-sm text-white/70 hover:text-white hover:bg-white/5 rounded-md transition-all"
+                            onClick={() => handleSectionItemClick(section.id, "recommendations")}
+                          >
+                            <Award className="mr-2 h-4 w-4 text-primary/80" />
+                            <span>Recommendations</span>
+                          </button>
+                        </li>
+                      )}
                     </ul>
                   </AccordionContent>
                 </AccordionItem>

@@ -26,6 +26,29 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
+    // Validate form fields
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      toast({
+        title: "Missing information",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+    
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1500));
     
@@ -182,8 +205,8 @@ const Contact = () => {
                   <Mail className="h-5 w-5 text-primary mr-3 mt-0.5" />
                   <div>
                     <p className="text-sm font-medium text-white mb-1">Email</p>
-                    <a href="mailto:contact@profileenhancehub.com" className="text-white/70 hover:text-white transition-colors">
-                      contact@profileenhancehub.com
+                    <a href="mailto:dishagiri09170@gmail.com" className="text-white/70 hover:text-white transition-colors">
+                      dishagiri09170@gmail.com
                     </a>
                   </div>
                 </div>

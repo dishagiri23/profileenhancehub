@@ -1,15 +1,117 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   User, Image, PenTool, FileText, Briefcase, GraduationCap, Star, Award,
   MessageSquare, Link as LinkIcon, Users, UserPlus, Search, Bell, Mail
 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const Services = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedTab, setSelectedTab] = useState("profile");
+  const [selectedService, setSelectedService] = useState<any>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  // Parse query parameters
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const section = searchParams.get("section");
+    const subsection = searchParams.get("subsection");
+    
+    if (section) {
+      setSelectedTab(section);
+      
+      if (subsection) {
+        // Find the service details for this subsection
+        const sectionData = getServicesForTab(section);
+        const service = sectionData.find(s => s.id === subsection);
+        if (service) {
+          setSelectedService(service);
+        }
+      }
+    }
+    
+    // Check if user is logged in
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      setIsLoggedIn(true);
+    }
+  }, [location.search]);
+
+  const handleLearnMore = (service: any) => {
+    if (!isLoggedIn) {
+      toast({
+        title: "Login required",
+        description: "Please log in to access this service",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+    
+    setSelectedService(service);
+  };
+
+  const handleStartOptimization = () => {
+    if (!isLoggedIn) {
+      toast({
+        title: "Login required",
+        description: "Please log in to start optimization",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+    
+    toast({
+      title: "Starting optimization",
+      description: "Preparing your personalized optimization plan...",
+    });
+    
+    navigate("/dashboard");
+  };
+
+  const handleScheduleConsultation = () => {
+    if (!isLoggedIn) {
+      toast({
+        title: "Login required",
+        description: "Please log in to schedule a consultation",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+    
+    navigate("/contact");
+    
+    setTimeout(() => {
+      toast({
+        title: "Consultation request received",
+        description: "We'll contact you shortly to schedule your consultation",
+      });
+    }, 500);
+  };
+
+  const closeServiceDialog = () => {
+    setSelectedService(null);
+    
+    // Remove query params
+    navigate("/services", { replace: true });
+  };
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -49,6 +151,13 @@ const Services = () => {
         "Wear formal or semi-formal attire",
         "Use a plain, non-distracting background",
         "High-quality resolution image"
+      ],
+      longDescription: "Your profile picture is often the first impression recruiters get of you. Studies show that profiles with professional headshots get 14 times more views than those without. Our optimization helps you select or create the perfect professional image that establishes credibility while remaining approachable.",
+      optimizationSteps: [
+        "Analyze your current profile picture against industry standards",
+        "Provide custom recommendations for lighting, attire, and background",
+        "Suggest cropping and editing adjustments for maximum impact",
+        "Compare with successful profiles in your industry"
       ]
     },
     {
@@ -61,6 +170,13 @@ const Services = () => {
         "Integrated tech stacks when relevant",
         "Balanced text and visual elements",
         "Color schemes that complement your profile"
+      ],
+      longDescription: "Your banner is valuable real estate that most LinkedIn users don't optimize. A customized banner can instantly communicate your professional identity and set you apart from competitors. We'll help you design a banner that visually reinforces your personal brand and areas of expertise.",
+      optimizationSteps: [
+        "Create a custom banner that aligns with your industry and personal brand",
+        "Integrate relevant technology icons and visual elements",
+        "Balance visual appeal with professional messaging",
+        "Ensure design quality that looks good on all devices"
       ]
     },
     {
@@ -73,6 +189,13 @@ const Services = () => {
         "Industry-relevant keywords",
         "Clear value proposition",
         "Optimized for ATS systems"
+      ],
+      longDescription: "Your headline is one of the most important elements for LinkedIn search visibility. We'll help you craft a headline that not only captures attention but also includes the right keywords to ensure you appear in recruiter searches for your desired roles.",
+      optimizationSteps: [
+        "Research high-performing headlines in your industry",
+        "Identify relevant keywords that boost search visibility",
+        "Craft a headline that balances creativity with searchability",
+        "Test variations to determine the most effective approach"
       ]
     },
     {
@@ -86,6 +209,13 @@ const Services = () => {
         "Key skills highlight",
         "Quantifiable achievements",
         "Clear call to action"
+      ],
+      longDescription: "Your About section is where you can really showcase your personality and professional journey. We'll help you structure this section to highlight your unique value proposition, incorporate relevant keywords, and create a narrative that engages readers and prompts them to take action.",
+      optimizationSteps: [
+        "Analyze your current About section for engagement and keyword density",
+        "Structure a compelling narrative that highlights your unique value",
+        "Incorporate industry-specific terminology and keywords",
+        "Create a clear call-to-action that encourages connection"
       ]
     },
     {
@@ -98,6 +228,13 @@ const Services = () => {
         "Quantified results and metrics",
         "Role-specific achievements",
         "Technical terminology relevant to your field"
+      ],
+      longDescription: "Your Experience section needs to do more than just list job duties—it needs to demonstrate your impact. We'll help you transform each role description into a powerful showcase of your achievements, quantified results, and the specific value you provided to each organization.",
+      optimizationSteps: [
+        "Convert job descriptions from task-based to achievement-based",
+        "Incorporate metrics and quantifiable results for each role",
+        "Add relevant technical terminology and industry keywords",
+        "Structure role descriptions for maximum readability and impact"
       ]
     },
     {
@@ -110,6 +247,13 @@ const Services = () => {
         "Academic achievements highlight",
         "Additional certifications",
         "Research and projects"
+      ],
+      longDescription: "Your Education section is more than just where you went to school—it can highlight relevant coursework, projects, and achievements that directly relate to your career goals. We'll help you optimize this section to emphasize the educational experiences that best support your professional narrative.",
+      optimizationSteps: [
+        "Highlight relevant coursework and specializations",
+        "Showcase academic achievements and honors",
+        "Integrate relevant research projects and their outcomes",
+        "Structure education entries to emphasize career-relevant details"
       ]
     },
     {
@@ -122,6 +266,13 @@ const Services = () => {
         "Published articles and content",
         "Project showcases",
         "Recognition and awards"
+      ],
+      longDescription: "The Featured section allows you to showcase tangible evidence of your expertise. We'll help you select and organize the most impactful content—whether it's articles, external projects, media appearances, or presentations—to provide proof of your professional capabilities.",
+      optimizationSteps: [
+        "Select high-impact projects and content to feature",
+        "Create compelling descriptions for each featured item",
+        "Organize featured content for maximum visual impact",
+        "Ensure all featured items support your professional narrative"
       ]
     },
     {
@@ -134,6 +285,13 @@ const Services = () => {
         "Technical skills prioritization",
         "Soft skills balance",
         "Endorsement strategy"
+      ],
+      longDescription: "LinkedIn allows you to showcase up to 50 skills, but choosing the right ones is crucial. We'll research the most in-demand skills for your target roles and help you organize them strategically to improve your searchability and demonstrate your qualifications.",
+      optimizationSteps: [
+        "Research most-searched skills for your target roles",
+        "Prioritize skills based on relevance and demand",
+        "Balance technical and soft skills for a complete profile",
+        "Develop a strategy to gain endorsements for key skills"
       ]
     },
     {
@@ -146,6 +304,13 @@ const Services = () => {
         "Guidance for recommenders",
         "Strategic recommendation placement",
         "Reciprocal recommendation approach"
+      ],
+      longDescription: "Quality recommendations add significant credibility to your profile. We'll help you develop a strategy to request recommendations from the right people, provide them with guidance on what to highlight, and manage your recommendations for maximum impact.",
+      optimizationSteps: [
+        "Identify key individuals to request recommendations from",
+        "Create templates for personalized recommendation requests",
+        "Provide guidance to recommenders on key points to highlight",
+        "Develop a strategy for reciprocal recommendations"
       ]
     },
     {
@@ -158,6 +323,13 @@ const Services = () => {
         "Name-based customization",
         "Removal of numbers and special characters",
         "Consistency with other professional handles"
+      ],
+      longDescription: "A customized LinkedIn URL is more professional, easier to share, and better for your personal brand. We'll help you create a clean, professional custom URL that removes random numbers and aligns with your personal branding across other platforms.",
+      optimizationSteps: [
+        "Create a professional custom URL based on your name",
+        "Remove random numbers and special characters",
+        "Ensure consistency with other professional handles",
+        "Set up proper redirects if you're changing from an existing URL"
       ]
     }
   ];
@@ -173,6 +345,13 @@ const Services = () => {
         "Engagement strategies for each group",
         "Content sharing guidelines",
         "Networking opportunities within groups"
+      ],
+      longDescription: "LinkedIn groups can dramatically expand your network and visibility when approached strategically. We'll help you identify the most relevant groups in your industry, develop engagement strategies that position you as a thought leader, and create opportunities to connect with key professionals.",
+      optimizationSteps: [
+        "Research and recommend the most valuable groups in your industry",
+        "Develop custom engagement strategies for different group types",
+        "Create templates for valuable contributions to group discussions",
+        "Build a schedule for consistent group participation"
       ]
     },
     {
@@ -185,6 +364,13 @@ const Services = () => {
         "Alumni connection strategy",
         "Industry leader targeting",
         "Peer network development"
+      ],
+      longDescription: "Building your LinkedIn network strategically is more effective than collecting random connections. We'll help you identify and connect with the right people—recruiters at your target companies, alumni from your schools, industry leaders, and peers—who can provide the most value to your professional journey.",
+      optimizationSteps: [
+        "Identify key recruiters and decision-makers at target companies",
+        "Develop strategies to leverage alumni connections",
+        "Create plans for connecting with industry thought leaders",
+        "Build a balanced network expansion roadmap"
       ]
     },
     {
@@ -197,6 +383,13 @@ const Services = () => {
         "Personalization strategies",
         "Follow-up messaging approaches",
         "Conversion to meaningful interaction"
+      ],
+      longDescription: "Generic connection requests are often ignored. We'll help you craft personalized, compelling connection messages tailored to different recipient types that significantly increase your acceptance rate and set the foundation for meaningful professional relationships.",
+      optimizationSteps: [
+        "Create customized templates for different connection types",
+        "Develop personalization strategies that show genuine interest",
+        "Design follow-up messaging sequences that build relationships",
+        "Implement tracking to measure and improve acceptance rates"
       ]
     }
   ];
@@ -212,6 +405,13 @@ const Services = () => {
         "Industry-specific search terms",
         "Location and remote work filters",
         "Company size and type targeting"
+      ],
+      longDescription: "Many job seekers only see a fraction of available opportunities because they don't know how to search effectively. We'll teach you advanced Boolean search techniques and custom filters that uncover hidden job opportunities perfectly matched to your skills and career goals.",
+      optimizationSteps: [
+        "Learn powerful Boolean search operators for precise job searches",
+        "Create custom search strings tailored to your target roles",
+        "Set up advanced filters to narrow results efficiently",
+        "Develop strategies for discovering unadvertised opportunities"
       ]
     },
     {
@@ -224,6 +424,13 @@ const Services = () => {
         "Alert frequency settings",
         "Multi-criteria alert strategy",
         "Alert management system"
+      ],
+      longDescription: "Effective job alerts bring opportunities to you, saving time and ensuring you don't miss out. We'll help you set up optimized job alerts with the perfect keywords, filters, and frequency settings to deliver highly relevant opportunities directly to your inbox.",
+      optimizationSteps: [
+        "Create optimized search strings for job alerts",
+        "Set ideal frequency settings based on market activity",
+        "Implement multiple specialized alerts for different role types",
+        "Develop a system to manage and refine alerts over time"
       ]
     },
     {
@@ -236,6 +443,13 @@ const Services = () => {
         "Company page monitoring",
         "Salary insights tool",
         "Job application tracking"
+      ],
+      longDescription: "LinkedIn offers powerful job search tools that most users never fully leverage. We'll show you how to use the Alumni tool to find connections at target companies, track companies for new opportunities, leverage salary insights for negotiation, and effectively manage your job application process.",
+      optimizationSteps: [
+        "Master the Alumni tool to find connections at target companies",
+        "Set up strategic company following for opportunity alerts",
+        "Leverage salary insights for interview preparation",
+        "Create a system to track and follow up on applications"
       ]
     }
   ];
@@ -251,6 +465,13 @@ const Services = () => {
         "Hiring manager search strategies",
         "Email discovery methods",
         "Contact organization system"
+      ],
+      longDescription: "Finding the right people to contact dramatically increases your chances of landing interviews. We'll teach you proven techniques to identify decision-makers and hiring managers at your target companies, even when they're not publicly advertising positions.",
+      optimizationSteps: [
+        "Learn advanced search techniques to identify decision-makers",
+        "Develop strategies to find hiring managers for specific departments",
+        "Master methods to verify contact information",
+        "Create a system to organize and prioritize outreach contacts"
       ]
     },
     {
@@ -263,13 +484,20 @@ const Services = () => {
         "Follow-up sequence strategy",
         "Response handling approaches",
         "Conversation continuation techniques"
+      ],
+      longDescription: "Effective cold outreach can open doors to opportunities that never get publicly posted. We'll provide you with proven templates and strategies for initial messages, follow-up sequences, and conversation advancement that generate responses and create meaningful professional relationships.",
+      optimizationSteps: [
+        "Create customizable templates for different outreach scenarios",
+        "Develop a strategic follow-up sequence that increases response rates",
+        "Learn techniques for handling different types of responses",
+        "Master strategies for converting initial contact into meaningful conversations"
       ]
     }
   ];
 
   const certificationServices = [
     {
-      id: "certifications",
+      id: "recommendations",
       title: "Certification Recommendations",
       description: "Identify the certifications that will actually advance your career and make your profile stand out.",
       icon: Award,
@@ -278,6 +506,13 @@ const Services = () => {
         "ROI assessment of certification options",
         "Certification display strategy",
         "Learning path recommendations"
+      ],
+      longDescription: "Not all certifications are created equal. We'll analyze your industry and target roles to recommend certifications that provide the highest return on investment, enhance your credibility, and truly differentiate you from other candidates.",
+      optimizationSteps: [
+        "Research most-valued certifications for your target roles",
+        "Analyze ROI of different certification options",
+        "Create a strategic roadmap for certification acquisition",
+        "Develop optimal strategies for displaying certifications on your profile"
       ]
     }
   ];
@@ -378,6 +613,7 @@ const Services = () => {
                       <Button 
                         className="w-full bg-white/5 hover:bg-white/10 text-white border border-white/10"
                         variant="outline"
+                        onClick={() => handleLearnMore(service)}
                       >
                         Learn More
                       </Button>
@@ -402,15 +638,83 @@ const Services = () => {
             Get started today and see how a professionally optimized LinkedIn profile can open new doors for your career.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button className="px-8 py-6 text-base font-medium bg-primary hover:bg-primary/90 text-white">
+            <Button 
+              className="px-8 py-6 text-base font-medium bg-primary hover:bg-primary/90 text-white"
+              onClick={handleStartOptimization}
+            >
               Start Your Optimization
             </Button>
-            <Button variant="outline" className="px-8 py-6 text-base font-medium border-white/20 hover:bg-white/5">
+            <Button 
+              variant="outline" 
+              className="px-8 py-6 text-base font-medium border-white/20 hover:bg-white/5"
+              onClick={handleScheduleConsultation}
+            >
               Schedule a Consultation
             </Button>
           </div>
         </motion.div>
       </motion.div>
+
+      {/* Service Detail Dialog */}
+      <Dialog open={!!selectedService} onOpenChange={() => selectedService && closeServiceDialog()}>
+        <DialogContent className="bg-black/90 border border-white/10 text-white max-w-2xl max-h-[80vh] overflow-y-auto">
+          {selectedService && (
+            <>
+              <DialogHeader className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <selectedService.icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <DialogTitle className="text-xl text-white">{selectedService.title}</DialogTitle>
+                </div>
+                <DialogDescription className="text-white/70 text-base">
+                  {selectedService.description}
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-5 py-4">
+                <div>
+                  <h3 className="text-lg font-medium text-white mb-2">In-Depth Overview</h3>
+                  <p className="text-white/80 text-sm leading-relaxed">{selectedService.longDescription}</p>
+                </div>
+                
+                <div>
+                  <h3 className="text-lg font-medium text-white mb-2">How We Optimize This Area</h3>
+                  <ul className="space-y-2">
+                    {selectedService.optimizationSteps.map((step: string, index: number) => (
+                      <li key={index} className="flex items-start text-sm">
+                        <span className="text-primary font-medium mr-2">{index + 1}.</span>
+                        <span className="text-white/80">{step}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div className="glass-card rounded-lg p-4">
+                  <h3 className="text-sm font-medium text-white mb-2">What's Included:</h3>
+                  <ul className="space-y-1">
+                    {selectedService.details.map((detail: string, index: number) => (
+                      <li key={index} className="flex items-start text-xs">
+                        <span className="text-primary mr-2">•</span>
+                        <span className="text-white/70">{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              
+              <DialogFooter className="flex flex-col sm:flex-row gap-3">
+                <Button variant="outline" onClick={closeServiceDialog} className="bg-white/5 hover:bg-white/10 border-white/10">
+                  Close
+                </Button>
+                <Button onClick={handleStartOptimization} className="bg-primary hover:bg-primary/90">
+                  Start Optimization
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
