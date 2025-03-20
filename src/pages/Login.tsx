@@ -119,26 +119,32 @@ const Login = () => {
     try {
       // Create mock user data for demo purposes with a valid looking email
       let mockEmail = "";
+      let mockName = "";
       
       switch(provider) {
         case "Google":
           mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@gmail.com";
+          mockName = "Google User";
           break;
         case "GitHub":
           mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@github.com";
+          mockName = "GitHub User";
           break;
         case "LinkedIn":
           mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@linkedin.com";
+          mockName = "LinkedIn User";
           break;
         case "Twitter":
           mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@twitter.com";
+          mockName = "Twitter User";
           break;
         default:
           mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@example.com";
+          mockName = "Social User";
       }
       
       const userData = {
-        name: `User via ${provider}`,
+        name: mockName,
         email: mockEmail,
         profileUrl: "",
         imageUrl: "",

@@ -179,8 +179,8 @@
 
 /* Fix for sidebar optimization tools and header */
 @media (max-width: 767px) {
-  aside .h-16 .text-xl {
-    font-size: 1.1rem;
+  aside .flex.items-center.justify-between h2.text-lg {
+    font-size: 1rem;
   }
   
   /* Fix sidebar header height on mobile */
@@ -229,5 +229,20 @@
   /* Smaller text on mobile */
   .text-sm {
     font-size: 0.8rem;
+  }
+}
+
+/* Fix "Optimization tools" text overflow issue */
+@media (max-width: 1023px) {
+  aside .h-16 {
+    min-height: 4rem;
+  }
+  
+  aside .h-16 h2.text-lg {
+    font-size: 1rem;
+    max-width: 70%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }

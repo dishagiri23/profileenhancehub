@@ -66,14 +66,14 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     
     setIsAnalyzing(true);
     
+    // Save URL to localStorage
+    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+    userData.profileUrl = profileUrl;
+    localStorage.setItem("userData", JSON.stringify(userData));
+    
     // Simulate analysis
     setTimeout(() => {
       setIsAnalyzing(false);
-      
-      // Save URL to localStorage
-      const userData = JSON.parse(localStorage.getItem("userData") || "{}");
-      userData.profileUrl = profileUrl;
-      localStorage.setItem("userData", JSON.stringify(userData));
       
       toast({
         title: "Profile analyzed!",

@@ -19,6 +19,7 @@ const Dashboard = () => {
     profileUrl: string;
     imageUrl: string;
     signUpMethod: string;
+    optimizedSections?: string[];
   } | null>(null);
 
   // Check if user is logged in
@@ -27,7 +28,8 @@ const Dashboard = () => {
     
     if (storedUserData) {
       setIsLoggedIn(true);
-      setUserData(JSON.parse(storedUserData));
+      const parsedData = JSON.parse(storedUserData);
+      setUserData(parsedData);
     } else {
       // Redirect to login page if not logged in
       toast({
@@ -38,6 +40,19 @@ const Dashboard = () => {
       navigate("/login");
     }
   }, [navigate, toast]);
+
+  const handleOptimizeProfile = () => {
+    if (!userData?.profileUrl) {
+      toast({
+        title: "LinkedIn URL required",
+        description: "Please enter your LinkedIn profile URL in the sidebar first",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    navigate("/services");
+  };
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -55,6 +70,9 @@ const Dashboard = () => {
       </div>
     );
   }
+
+  const optimizedSectionsCount = userData.optimizedSections?.length || 0;
+  const profileCompletion = Math.min(Math.round((optimizedSectionsCount / 10) * 100), 100);
 
   return (
     <div className="pt-24 pb-20">
@@ -116,9 +134,13 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-white">78%</div>
+                  <div className="text-3xl font-bold text-white">{profileCompletion}%</div>
                   <p className="text-white/70 text-sm">Profile completion</p>
-                  <Button variant="link" className="text-primary p-0 h-auto mt-2">
+                  <Button 
+                    variant="link" 
+                    className="text-primary p-0 h-auto mt-2"
+                    onClick={handleOptimizeProfile}
+                  >
                     Complete profile
                   </Button>
                 </CardContent>
@@ -132,9 +154,15 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-white">124</div>
+                  <div className="text-3xl font-bold text-white">
+                    {Math.floor(Math.random() * 200) + 50}
+                  </div>
                   <p className="text-white/70 text-sm">Total connections</p>
-                  <Button variant="link" className="text-primary p-0 h-auto mt-2">
+                  <Button 
+                    variant="link" 
+                    className="text-primary p-0 h-auto mt-2"
+                    onClick={() => navigate("/services?section=networking")}
+                  >
                     Grow network
                   </Button>
                 </CardContent>
@@ -148,7 +176,7 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-white">8</div>
+                  <div className="text-3xl font-bold text-white">{Math.floor(Math.random() * 10)}</div>
                   <p className="text-white/70 text-sm">Unread messages</p>
                   <Button variant="link" className="text-primary p-0 h-auto mt-2">
                     View messages
@@ -164,9 +192,13 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-white">3</div>
+                  <div className="text-3xl font-bold text-white">{Math.floor(Math.random() * 5)}</div>
                   <p className="text-white/70 text-sm">Active applications</p>
-                  <Button variant="link" className="text-primary p-0 h-auto mt-2">
+                  <Button 
+                    variant="link" 
+                    className="text-primary p-0 h-auto mt-2"
+                    onClick={() => navigate("/services?section=jobSearch")}
+                  >
                     View applications
                   </Button>
                 </CardContent>
@@ -183,7 +215,12 @@ const Dashboard = () => {
                   <div>
                     <h4 className="text-white font-medium">Enhance your About section</h4>
                     <p className="text-white/70 text-sm">Your About section could use more keywords relevant to your industry.</p>
-                    <Button size="sm" variant="outline" className="mt-2 bg-white/5 hover:bg-white/10 border-white/10">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="mt-2 bg-white/5 hover:bg-white/10 border-white/10"
+                      onClick={() => navigate("/services?section=profile&subsection=about&optimize=true")}
+                    >
                       Optimize Now
                     </Button>
                   </div>
@@ -196,7 +233,12 @@ const Dashboard = () => {
                   <div>
                     <h4 className="text-white font-medium">Add relevant skills</h4>
                     <p className="text-white/70 text-sm">We've identified 5 skills that could improve your profile visibility.</p>
-                    <Button size="sm" variant="outline" className="mt-2 bg-white/5 hover:bg-white/10 border-white/10">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="mt-2 bg-white/5 hover:bg-white/10 border-white/10"
+                      onClick={() => navigate("/services?section=profile&subsection=skills&optimize=true")}
+                    >
                       Add Skills
                     </Button>
                   </div>
@@ -209,7 +251,12 @@ const Dashboard = () => {
                   <div>
                     <h4 className="text-white font-medium">Improve profile discoverability</h4>
                     <p className="text-white/70 text-sm">Optimize your profile to appear in more search results.</p>
-                    <Button size="sm" variant="outline" className="mt-2 bg-white/5 hover:bg-white/10 border-white/10">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="mt-2 bg-white/5 hover:bg-white/10 border-white/10"
+                      onClick={() => navigate("/services?section=profile&subsection=headline&optimize=true")}
+                    >
                       View Suggestions
                     </Button>
                   </div>
@@ -227,7 +274,24 @@ const Dashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-white/70">Profile management features coming soon...</p>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-white/80">Name</p>
+                    <p className="text-white">{userData.name}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-white/80">Email</p>
+                    <p className="text-white">{userData.email}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-white/80">LinkedIn Profile</p>
+                    <p className="text-white">{userData.profileUrl || "Not set"}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-white/80">Login Method</p>
+                    <p className="text-white">{userData.signUpMethod}</p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -283,7 +347,57 @@ const Dashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-white/70">Settings management features coming soon...</p>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <h3 className="text-white font-medium">Reset Password</h3>
+                    <p className="text-white/70 text-sm">Change your account password</p>
+                    <Button 
+                      variant="outline" 
+                      className="mt-2 bg-white/5 hover:bg-white/10 border-white/10"
+                      onClick={() => {
+                        toast({
+                          title: "Feature coming soon",
+                          description: "Password reset will be available soon.",
+                        });
+                      }}
+                    >
+                      Change Password
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-white font-medium">Notifications</h3>
+                    <p className="text-white/70 text-sm">Manage your notification preferences</p>
+                    <Button 
+                      variant="outline" 
+                      className="mt-2 bg-white/5 hover:bg-white/10 border-white/10"
+                      onClick={() => {
+                        toast({
+                          title: "Feature coming soon",
+                          description: "Notification settings will be available soon.",
+                        });
+                      }}
+                    >
+                      Notification Settings
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-white font-medium">Delete Account</h3>
+                    <p className="text-white/70 text-sm">Permanently delete your account and all data</p>
+                    <Button 
+                      variant="destructive" 
+                      className="mt-2"
+                      onClick={() => {
+                        toast({
+                          title: "Feature coming soon",
+                          description: "Account deletion will be available soon.",
+                          variant: "destructive"
+                        });
+                      }}
+                    >
+                      Delete Account
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
