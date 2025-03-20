@@ -23,6 +23,11 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     const userData = localStorage.getItem("userData");
     if (userData) {
       setIsLoggedIn(true);
+      // Get saved profile URL if available
+      const parsedData = JSON.parse(userData);
+      if (parsedData.profileUrl) {
+        setProfileUrl(parsedData.profileUrl);
+      }
     }
   }, []);
 
@@ -79,6 +84,9 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       if (window.innerWidth < 1024) {
         setIsOpen(false);
       }
+      
+      // Navigate to dashboard with the analyzed profile
+      navigate("/dashboard");
     }, 2000);
   };
 
@@ -94,14 +102,24 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       return;
     }
     
+    // Check if profile URL is provided
+    if (!profileUrl) {
+      toast({
+        title: "Profile URL required",
+        description: "Please enter your LinkedIn profile URL above",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     // Simulate loading optimization tool
     toast({
-      title: `Loading ${subsection}`,
-      description: "Preparing optimization suggestions...",
+      title: `Optimizing ${subsection}`,
+      description: "Your profile is being optimized...",
     });
     
     // Navigate to appropriate service section with query params
-    navigate(`/services?section=${section}&subsection=${subsection}`);
+    navigate(`/services?section=${section}&subsection=${subsection}&optimize=true`);
     
     // Close sidebar on mobile after selection
     if (window.innerWidth < 1024) {
@@ -160,7 +178,9 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       id: "certifications",
       title: "Certifications",
       icon: Award,
-      subsections: []
+      subsections: [
+        { id: "recommendations", title: "Recommendations", icon: Award }
+      ]
     }
   ];
 
@@ -181,7 +201,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
         } lg:relative lg:z-0`}
       >
         <div className="flex items-center justify-between h-16 px-6 border-b border-white/10">
-          <h2 className="text-xl font-bold text-white">Optimization Tools</h2>
+          <h2 className="text-lg font-bold text-white">Optimization Tools</h2>
           <button
             onClick={() => setIsOpen(false)}
             className="lg:hidden p-2 rounded-full hover:bg-white/5 transition-colors"
@@ -237,17 +257,6 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
                           </button>
                         </li>
                       ))}
-                      {section.subsections.length === 0 && section.id === "certifications" && (
-                        <li>
-                          <button
-                            className="w-full flex items-center px-4 py-2 text-sm text-white/70 hover:text-white hover:bg-white/5 rounded-md transition-all"
-                            onClick={() => handleSectionItemClick(section.id, "recommendations")}
-                          >
-                            <Award className="mr-2 h-4 w-4 text-primary/80" />
-                            <span>Recommendations</span>
-                          </button>
-                        </li>
-                      )}
                     </ul>
                   </AccordionContent>
                 </AccordionItem>

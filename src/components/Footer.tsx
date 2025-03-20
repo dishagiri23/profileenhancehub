@@ -4,6 +4,7 @@ import { Linkedin, Twitter, Github, Mail } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const contactEmail = "dishagiri09170@gmail.com";
 
   return (
     <footer className="bg-black/50 backdrop-blur-lg border-t border-white/5 mt-auto">
@@ -18,10 +19,10 @@ const Footer = () => {
             <div className="flex items-center space-x-2">
               <Mail className="h-4 w-4 text-primary" />
               <a 
-                href="mailto:dishagiri09170@gmail.com" 
+                href={`mailto:${contactEmail}`} 
                 className="text-sm text-white/70 hover:text-white transition-colors"
               >
-                dishagiri09170@gmail.com
+                {contactEmail}
               </a>
             </div>
           </div>
@@ -83,8 +84,8 @@ const Footer = () => {
             <p className="text-sm text-white/70">
               Disha Giri<br />
               LinkedIn Profile Optimization Specialist<br />
-              <a href="mailto:dishagiri09170@gmail.com" className="hover:text-white transition-colors">
-                dishagiri09170@gmail.com
+              <a href={`mailto:${contactEmail}`} className="hover:text-white transition-colors">
+                {contactEmail}
               </a>
             </p>
           </div>

@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 const Signup = () => {
@@ -177,14 +176,41 @@ const Signup = () => {
         return;
       }
       
-      // Create mock user data for demo
+      // Create mock user data with valid-looking email
+      let mockEmail = "";
+      
+      switch(provider) {
+        case "Google":
+          mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@gmail.com";
+          break;
+        case "GitHub":
+          mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@github.com";
+          break;
+        case "LinkedIn":
+          mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@linkedin.com";
+          break;
+        case "Twitter":
+          mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@twitter.com";
+          break;
+        default:
+          mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@example.com";
+      }
+      
       const userData = {
         name: `User via ${provider}`,
-        email: `user_${Date.now()}@${provider.toLowerCase()}.example.com`,
+        email: mockEmail,
         profileUrl: "",
         imageUrl: "",
         signUpMethod: provider
       };
+      
+      // Save to users array for consistency
+      const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+      storedUsers.push({
+        ...userData,
+        password: "socialSignup123" // Dummy password
+      });
+      localStorage.setItem("users", JSON.stringify(storedUsers));
       
       localStorage.setItem("userData", JSON.stringify(userData));
       

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -6,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   User, Image, PenTool, FileText, Briefcase, GraduationCap, Star, Award,
-  MessageSquare, Link as LinkIcon, Users, UserPlus, Search, Bell, Mail
+  MessageSquare, Link as LinkIcon, Users, UserPlus, Search, Bell, Mail, CheckCircle
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -25,30 +24,36 @@ const Services = () => {
   const [selectedTab, setSelectedTab] = useState("profile");
   const [selectedService, setSelectedService] = useState<any>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [optimizationComplete, setOptimizationComplete] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
   
-  // Parse query parameters
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const section = searchParams.get("section");
     const subsection = searchParams.get("subsection");
+    const optimize = searchParams.get("optimize");
     
     if (section) {
       setSelectedTab(section);
       
       if (subsection) {
-        // Find the service details for this subsection
         const sectionData = getServicesForTab(section);
         const service = sectionData.find(s => s.id === subsection);
         if (service) {
           setSelectedService(service);
+          
+          if (optimize === "true") {
+            handleStartOptimization(true);
+          }
         }
       }
     }
     
-    // Check if user is logged in
-    const userData = localStorage.getItem("userData");
-    if (userData) {
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
       setIsLoggedIn(true);
+      setUserData(JSON.parse(storedUserData));
     }
   }, [location.search]);
 
@@ -66,7 +71,7 @@ const Services = () => {
     setSelectedService(service);
   };
 
-  const handleStartOptimization = () => {
+  const handleStartOptimization = (autoStart = false) => {
     if (!isLoggedIn) {
       toast({
         title: "Login required",
@@ -77,12 +82,48 @@ const Services = () => {
       return;
     }
     
-    toast({
-      title: "Starting optimization",
-      description: "Preparing your personalized optimization plan...",
-    });
+    if (!userData?.profileUrl) {
+      toast({
+        title: "LinkedIn URL required",
+        description: "Please enter your LinkedIn profile URL in the sidebar first",
+        variant: "destructive",
+      });
+      
+      if (!autoStart) {
+        closeServiceDialog();
+      }
+      
+      return;
+    }
     
-    navigate("/dashboard");
+    setIsOptimizing(true);
+    
+    setTimeout(() => {
+      setIsOptimizing(false);
+      setOptimizationComplete(true);
+      
+      toast({
+        title: "Optimization complete!",
+        description: `Your ${selectedService?.title.toLowerCase()} has been optimized successfully.`,
+      });
+      
+      const updatedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
+      updatedUserData.optimizedSections = updatedUserData.optimizedSections || [];
+      
+      if (selectedService && !updatedUserData.optimizedSections.includes(selectedService.id)) {
+        updatedUserData.optimizedSections.push(selectedService.id);
+      }
+      
+      localStorage.setItem("userData", JSON.stringify(updatedUserData));
+      setUserData(updatedUserData);
+      
+      if (!autoStart) {
+        setTimeout(() => {
+          closeServiceDialog();
+          navigate("/dashboard");
+        }, 3000);
+      }
+    }, 2500);
   };
 
   const handleScheduleConsultation = () => {
@@ -108,8 +149,9 @@ const Services = () => {
 
   const closeServiceDialog = () => {
     setSelectedService(null);
+    setIsOptimizing(false);
+    setOptimizationComplete(false);
     
-    // Remove query params
     navigate("/services", { replace: true });
   };
 
@@ -144,7 +186,7 @@ const Services = () => {
     {
       id: "picture",
       title: "Professional Profile Picture",
-      description: "Create a professional headshot that makes the right first impression. We'll guide you through lighting, attire, and background choices.",
+      description: "Create a professional headshot that makes the right first impression. We'll optimize your current picture or guide you in creating a new one.",
       icon: Image,
       details: [
         "Smile to look approachable",
@@ -158,7 +200,8 @@ const Services = () => {
         "Provide custom recommendations for lighting, attire, and background",
         "Suggest cropping and editing adjustments for maximum impact",
         "Compare with successful profiles in your industry"
-      ]
+      ],
+      optimizationResult: "Your profile picture has been optimized with professional adjustments to improve clarity, background, and professional appearance. This enhances your first impression with recruiters."
     },
     {
       id: "banner",
@@ -177,7 +220,8 @@ const Services = () => {
         "Integrate relevant technology icons and visual elements",
         "Balance visual appeal with professional messaging",
         "Ensure design quality that looks good on all devices"
-      ]
+      ],
+      optimizationResult: "Your custom banner has been designed to showcase your professional brand, incorporating relevant tech stack icons and visual elements that highlight your expertise."
     },
     {
       id: "headline",
@@ -196,7 +240,8 @@ const Services = () => {
         "Identify relevant keywords that boost search visibility",
         "Craft a headline that balances creativity with searchability",
         "Test variations to determine the most effective approach"
-      ]
+      ],
+      optimizationResult: "Your headline has been optimized with industry-specific keywords and action-oriented phrases that clearly communicate your value proposition to recruiters."
     },
     {
       id: "about",
@@ -352,7 +397,8 @@ const Services = () => {
         "Develop custom engagement strategies for different group types",
         "Create templates for valuable contributions to group discussions",
         "Build a schedule for consistent group participation"
-      ]
+      ],
+      optimizationResult: "We've identified and added you to the top 5 LinkedIn groups in your industry, with customized engagement strategies to maximize your visibility and networking opportunities."
     },
     {
       id: "connect",
@@ -371,7 +417,8 @@ const Services = () => {
         "Develop strategies to leverage alumni connections",
         "Create plans for connecting with industry thought leaders",
         "Build a balanced network expansion roadmap"
-      ]
+      ],
+      optimizationResult: "We've identified key recruiters and decision-makers at your target companies, creating a custom contact list with verified information to help you connect directly with the right people."
     },
     {
       id: "requests",
@@ -390,7 +437,8 @@ const Services = () => {
         "Develop personalization strategies that show genuine interest",
         "Design follow-up messaging sequences that build relationships",
         "Implement tracking to measure and improve acceptance rates"
-      ]
+      ],
+      optimizationResult: "We've created customized templates and strategies for initial messages, follow-up sequences, and conversation advancement that generate responses and create meaningful professional relationships."
     }
   ];
 
@@ -412,7 +460,8 @@ const Services = () => {
         "Create custom search strings tailored to your target roles",
         "Set up advanced filters to narrow results efficiently",
         "Develop strategies for discovering unadvertised opportunities"
-      ]
+      ],
+      optimizationResult: "We've created personalized Boolean search templates and custom filters specific to your industry, helping you discover hidden job opportunities that match your skills and experience."
     },
     {
       id: "jobAlerts",
@@ -431,7 +480,8 @@ const Services = () => {
         "Set ideal frequency settings based on market activity",
         "Implement multiple specialized alerts for different role types",
         "Develop a system to manage and refine alerts over time"
-      ]
+      ],
+      optimizationResult: "We've created optimized job alerts with the perfect keywords and filters, delivering highly relevant opportunities directly to your inbox."
     },
     {
       id: "tools",
@@ -450,7 +500,8 @@ const Services = () => {
         "Set up strategic company following for opportunity alerts",
         "Leverage salary insights for interview preparation",
         "Create a system to track and follow up on applications"
-      ]
+      ],
+      optimizationResult: "We've mastered the Alumni tool to find connections at target companies, setting up strategic company following for opportunity alerts, leveraging salary insights for interview preparation, and creating a system to track and follow up on applications."
     }
   ];
 
@@ -472,7 +523,8 @@ const Services = () => {
         "Develop strategies to find hiring managers for specific departments",
         "Master methods to verify contact information",
         "Create a system to organize and prioritize outreach contacts"
-      ]
+      ],
+      optimizationResult: "We've identified key decision-makers and hiring managers at your target companies, creating a custom contact list with verified information to help you connect directly with the right people."
     },
     {
       id: "cold",
@@ -491,7 +543,8 @@ const Services = () => {
         "Develop a strategic follow-up sequence that increases response rates",
         "Learn techniques for handling different types of responses",
         "Master strategies for converting initial contact into meaningful conversations"
-      ]
+      ],
+      optimizationResult: "We've created customizable templates and strategies for initial messages, follow-up sequences, and conversation advancement that generate responses and create meaningful professional relationships."
     }
   ];
 
@@ -513,7 +566,8 @@ const Services = () => {
         "Analyze ROI of different certification options",
         "Create a strategic roadmap for certification acquisition",
         "Develop optimal strategies for displaying certifications on your profile"
-      ]
+      ],
+      optimizationResult: "We've created a personalized certification roadmap for your career goals, identifying the highest-ROI certifications for your industry and providing guidance on how to effectively showcase them on your profile."
     }
   ];
 
@@ -534,6 +588,11 @@ const Services = () => {
     }
   };
 
+  const isServiceOptimized = (serviceId: string) => {
+    if (!userData || !userData.optimizedSections) return false;
+    return userData.optimizedSections.includes(serviceId);
+  };
+
   return (
     <div className="pt-24 pb-20">
       <motion.div 
@@ -542,7 +601,6 @@ const Services = () => {
         animate="visible"
         variants={fadeIn}
       >
-        {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <motion.span 
             className="inline-block px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-4"
@@ -564,7 +622,6 @@ const Services = () => {
           </motion.p>
         </div>
 
-        {/* Services Tabs */}
         <Tabs defaultValue="profile" value={selectedTab} onValueChange={setSelectedTab} className="w-full">
           <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-12 bg-black/20 p-1 rounded-lg">
             {tabs.map((tab) => (
@@ -590,9 +647,15 @@ const Services = () => {
                 {getServicesForTab(tab.id).map((service) => (
                   <motion.div
                     key={service.id}
-                    className="glass-card rounded-xl overflow-hidden hover-scale"
+                    className="glass-card rounded-xl overflow-hidden hover-scale relative"
                     variants={fadeIn}
                   >
+                    {isServiceOptimized(service.id) && (
+                      <div className="absolute top-4 right-4 flex items-center gap-1 bg-primary/20 text-primary text-xs py-1 px-2 rounded-full">
+                        <CheckCircle className="h-3 w-3" />
+                        <span>Optimized</span>
+                      </div>
+                    )}
                     <div className="p-6">
                       <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                         <service.icon className="h-6 w-6 text-primary" />
@@ -615,7 +678,7 @@ const Services = () => {
                         variant="outline"
                         onClick={() => handleLearnMore(service)}
                       >
-                        Learn More
+                        {isServiceOptimized(service.id) ? "View Details" : "Learn More"}
                       </Button>
                     </div>
                   </motion.div>
@@ -625,7 +688,6 @@ const Services = () => {
           ))}
         </Tabs>
 
-        {/* CTA Section */}
         <motion.div 
           className="mt-20 max-w-4xl mx-auto glass-card rounded-2xl p-8 md:p-12 text-center"
           initial={{ opacity: 0, y: 20 }}
@@ -640,7 +702,17 @@ const Services = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button 
               className="px-8 py-6 text-base font-medium bg-primary hover:bg-primary/90 text-white"
-              onClick={handleStartOptimization}
+              onClick={() => {
+                if (!userData?.profileUrl) {
+                  toast({
+                    title: "LinkedIn URL required",
+                    description: "Please enter your LinkedIn profile URL in the sidebar first",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+                navigate("/dashboard");
+              }}
             >
               Start Your Optimization
             </Button>
@@ -655,7 +727,6 @@ const Services = () => {
         </motion.div>
       </motion.div>
 
-      {/* Service Detail Dialog */}
       <Dialog open={!!selectedService} onOpenChange={() => selectedService && closeServiceDialog()}>
         <DialogContent className="bg-black/90 border border-white/10 text-white max-w-2xl max-h-[80vh] overflow-y-auto">
           {selectedService && (
@@ -665,51 +736,105 @@ const Services = () => {
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <selectedService.icon className="h-5 w-5 text-primary" />
                   </div>
-                  <DialogTitle className="text-xl text-white">{selectedService.title}</DialogTitle>
+                  <div className="flex-1">
+                    <DialogTitle className="text-xl text-white">{selectedService.title}</DialogTitle>
+                    {isServiceOptimized(selectedService.id) && (
+                      <span className="inline-flex items-center gap-1 bg-primary/20 text-primary text-xs py-0.5 px-2 rounded-full mt-1">
+                        <CheckCircle className="h-3 w-3" />
+                        <span>Optimized</span>
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <DialogDescription className="text-white/70 text-base">
                   {selectedService.description}
                 </DialogDescription>
               </DialogHeader>
               
-              <div className="space-y-5 py-4">
-                <div>
-                  <h3 className="text-lg font-medium text-white mb-2">In-Depth Overview</h3>
-                  <p className="text-white/80 text-sm leading-relaxed">{selectedService.longDescription}</p>
+              {optimizationComplete ? (
+                <div className="space-y-5 py-4">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-medium text-white mb-2">Optimization Complete!</h3>
+                    <p className="text-white/80 mb-6">{selectedService.optimizationResult}</p>
+                    
+                    <Button 
+                      onClick={() => {
+                        closeServiceDialog();
+                        navigate("/dashboard");
+                      }}
+                      className="bg-primary hover:bg-primary/90"
+                    >
+                      View Results on Dashboard
+                    </Button>
+                  </div>
                 </div>
-                
-                <div>
-                  <h3 className="text-lg font-medium text-white mb-2">How We Optimize This Area</h3>
-                  <ul className="space-y-2">
-                    {selectedService.optimizationSteps.map((step: string, index: number) => (
-                      <li key={index} className="flex items-start text-sm">
-                        <span className="text-primary font-medium mr-2">{index + 1}.</span>
-                        <span className="text-white/80">{step}</span>
-                      </li>
-                    ))}
-                  </ul>
+              ) : (
+                <div className="space-y-5 py-4">
+                  {isOptimizing ? (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 mx-auto mb-4 relative">
+                        <div className="absolute inset-0 rounded-full border-4 border-primary/20 border-t-primary animate-spin"></div>
+                        <selectedService.icon className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-primary/70" />
+                      </div>
+                      <h3 className="text-xl font-medium text-white mb-2">Optimizing Your Profile</h3>
+                      <p className="text-white/60">Please wait while we analyze and optimize your LinkedIn profile...</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <h3 className="text-lg font-medium text-white mb-2">In-Depth Overview</h3>
+                        <p className="text-white/80 text-sm leading-relaxed">{selectedService.longDescription}</p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-lg font-medium text-white mb-2">How We Optimize This Area</h3>
+                        <ul className="space-y-2">
+                          {selectedService.optimizationSteps.map((step: string, index: number) => (
+                            <li key={index} className="flex items-start text-sm">
+                              <span className="text-primary font-medium mr-2">{index + 1}.</span>
+                              <span className="text-white/80">{step}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      
+                      <div className="glass-card rounded-lg p-4">
+                        <h3 className="text-sm font-medium text-white mb-2">What's Included:</h3>
+                        <ul className="space-y-1">
+                          {selectedService.details.map((detail: string, index: number) => (
+                            <li key={index} className="flex items-start text-xs">
+                              <span className="text-primary mr-2">•</span>
+                              <span className="text-white/70">{detail}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </>
+                  )}
                 </div>
-                
-                <div className="glass-card rounded-lg p-4">
-                  <h3 className="text-sm font-medium text-white mb-2">What's Included:</h3>
-                  <ul className="space-y-1">
-                    {selectedService.details.map((detail: string, index: number) => (
-                      <li key={index} className="flex items-start text-xs">
-                        <span className="text-primary mr-2">•</span>
-                        <span className="text-white/70">{detail}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+              )}
               
               <DialogFooter className="flex flex-col sm:flex-row gap-3">
-                <Button variant="outline" onClick={closeServiceDialog} className="bg-white/5 hover:bg-white/10 border-white/10">
+                <Button 
+                  variant="outline" 
+                  onClick={closeServiceDialog} 
+                  className="bg-white/5 hover:bg-white/10 border-white/10"
+                  disabled={isOptimizing}
+                >
                   Close
                 </Button>
-                <Button onClick={handleStartOptimization} className="bg-primary hover:bg-primary/90">
-                  Start Optimization
-                </Button>
+                {!optimizationComplete && !isOptimizing && !isServiceOptimized(selectedService.id) && (
+                  <Button 
+                    onClick={() => handleStartOptimization()} 
+                    className="bg-primary hover:bg-primary/90"
+                    disabled={isOptimizing}
+                  >
+                    Optimize Now
+                  </Button>
+                )}
               </DialogFooter>
             </>
           )}

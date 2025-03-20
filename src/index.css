@@ -72,12 +72,6 @@
   .text-linkedin {
     @apply text-[#0A66C2];
   }
-  
-  @media (max-width: 1023px) {
-    .lg\:relative.z-50 {
-      z-index: 50 !important;
-    }
-  }
 }
 
 /* Custom scrollbar for webkit browsers */
@@ -134,6 +128,17 @@
   nav.fixed.z-40 {
     z-index: 40 !important;
   }
+  
+  /* Ensure sidebar doesn't overflow with the page header */
+  aside.fixed {
+    padding-top: 0;
+    height: 100%;
+  }
+  
+  /* Fix overlay issues */
+  .fixed.inset-0.z-40 {
+    z-index: 40 !important;
+  }
 }
 
 /* Improve mobile responsiveness */
@@ -154,12 +159,41 @@
   .glass-card {
     padding: 1.25rem;
   }
+  
+  /* Adjust button layouts for mobile */
+  .flex-col.sm\:flex-row {
+    gap: 0.75rem;
+  }
+  
+  /* Add some spacing to mobile form elements */
+  input, select, textarea {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Ensure dialogs are properly sized on mobile */
+  [role="dialog"] {
+    width: calc(100% - 2rem);
+    max-width: 100%;
+  }
 }
 
 /* Fix for sidebar optimization tools and header */
 @media (max-width: 767px) {
   aside .h-16 .text-xl {
     font-size: 1.1rem;
+  }
+  
+  /* Fix sidebar header height on mobile */
+  aside .h-16 {
+    height: 4rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Adjust sidebar width on mobile */
+  aside.w-80 {
+    width: 85%;
+    max-width: 20rem;
   }
 }
 
@@ -175,4 +209,25 @@
 
 .animate-pulse-soft {
   animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Better form styling for mobile */
+@media (max-width: 480px) {
+  .tabs-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  /* Fix dialog content padding */
+  .dialog-content {
+    padding: 1rem;
+  }
+  
+  /* Smaller text on mobile */
+  .text-sm {
+    font-size: 0.8rem;
+  }
 }

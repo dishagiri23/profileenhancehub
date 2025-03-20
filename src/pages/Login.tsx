@@ -26,6 +26,12 @@ const Login = () => {
   const [resetEmail, setResetEmail] = useState("");
   const [isResetting, setIsResetting] = useState(false);
 
+  // Validate email
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -43,8 +49,7 @@ const Login = () => {
       }
 
       // Email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
+      if (!validateEmail(email)) {
         toast({
           title: "Invalid email",
           description: "Please enter a valid email address",
@@ -112,14 +117,45 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Create mock user data for demo purposes
+      // Create mock user data for demo purposes with a valid looking email
+      let mockEmail = "";
+      
+      switch(provider) {
+        case "Google":
+          mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@gmail.com";
+          break;
+        case "GitHub":
+          mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@github.com";
+          break;
+        case "LinkedIn":
+          mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@linkedin.com";
+          break;
+        case "Twitter":
+          mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@twitter.com";
+          break;
+        default:
+          mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@example.com";
+      }
+      
       const userData = {
         name: `User via ${provider}`,
-        email: email || `user_${Date.now()}@${provider.toLowerCase()}.example.com`,
+        email: mockEmail,
         profileUrl: "",
         imageUrl: "",
         signUpMethod: provider
       };
+      
+      // Save to users array too for consistency
+      const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+      const userExists = storedUsers.some((u: any) => u.email === mockEmail);
+      
+      if (!userExists) {
+        storedUsers.push({
+          ...userData,
+          password: "socialLogin123" // Dummy password
+        });
+        localStorage.setItem("users", JSON.stringify(storedUsers));
+      }
       
       localStorage.setItem("userData", JSON.stringify(userData));
       
@@ -147,8 +183,7 @@ const Login = () => {
     
     try {
       // Email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(resetEmail)) {
+      if (!validateEmail(resetEmail)) {
         toast({
           title: "Invalid email",
           description: "Please enter a valid email address",
@@ -175,10 +210,20 @@ const Login = () => {
       // Simulate sending reset email
       await new Promise(resolve => setTimeout(resolve, 1500));
       
+      // Reset password to a default for demo purposes
+      const updatedUsers = storedUsers.map((u: any) => {
+        if (u.email === resetEmail) {
+          return { ...u, password: "Password123" };
+        }
+        return u;
+      });
+      
+      localStorage.setItem("users", JSON.stringify(updatedUsers));
+      
       toast({
-        title: "Reset link sent",
-        description: "Check your email for password reset instructions",
-        duration: 5000,
+        title: "Password reset successful",
+        description: "Your password has been reset to 'Password123'. Please login with this new password.",
+        duration: 7000,
       });
       
       setForgotPasswordOpen(false);
@@ -296,7 +341,10 @@ const Login = () => {
                   type="button" 
                   variant="link" 
                   className="text-xs text-primary hover:text-primary/80 transition-colors p-0 h-auto"
-                  onClick={() => setForgotPasswordOpen(true)}
+                  onClick={() => {
+                    setResetEmail(email); // Pre-fill with current email if any
+                    setForgotPasswordOpen(true);
+                  }}
                 >
                   Forgot password?
                 </Button>
@@ -336,7 +384,7 @@ const Login = () => {
           <DialogHeader>
             <DialogTitle className="text-white">Reset Password</DialogTitle>
             <DialogDescription className="text-white/70">
-              Enter your email address and we'll send you a link to reset your password.
+              Enter your email address and we'll reset your password.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleForgotPassword}>
@@ -371,7 +419,7 @@ const Login = () => {
                 className="bg-primary hover:bg-primary/90 text-white"
                 disabled={isResetting}
               >
-                {isResetting ? "Sending..." : "Send Reset Link"}
+                {isResetting ? "Resetting..." : "Reset Password"}
               </Button>
             </DialogFooter>
           </form>
