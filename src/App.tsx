@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "./components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import Layout from "./components/Layout";
 import Index from "./pages/Index";
@@ -21,19 +21,53 @@ function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Router>
-        <Layout setIsSidebarOpen={setIsSidebarOpen} isSidebarOpen={isSidebarOpen}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Layout>
+        <Routes>
+          <Route path="/" element={
+            <Layout>
+              <Index />
+            </Layout>
+          } />
+          <Route path="/home" element={
+            <Layout>
+              <Home />
+            </Layout>
+          } />
+          <Route path="/services" element={
+            <Layout>
+              <Services />
+            </Layout>
+          } />
+          <Route path="/contact" element={
+            <Layout>
+              <Contact />
+            </Layout>
+          } />
+          <Route path="/login" element={
+            <Layout>
+              <Login />
+            </Layout>
+          } />
+          <Route path="/signup" element={
+            <Layout>
+              <Signup />
+            </Layout>
+          } />
+          <Route path="/dashboard" element={
+            <Layout>
+              <Dashboard />
+            </Layout>
+          } />
+          <Route path="/profile" element={
+            <Layout>
+              <Profile />
+            </Layout>
+          } />
+          <Route path="*" element={
+            <Layout>
+              <NotFound />
+            </Layout>
+          } />
+        </Routes>
       </Router>
       <Toaster />
     </ThemeProvider>

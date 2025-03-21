@@ -14,10 +14,10 @@ const Footer = () => {
               <Linkedin className="h-6 w-6 text-primary" />
               <h3 className="text-lg font-bold text-white">ProfileEnhanceHub</h3>
             </div>
-            <p className="text-white/70 text-sm max-w-xs">
+            <p className="text-white/70 text-sm max-w-xs ml-8">
               Elevate your professional presence with our AI-powered LinkedIn profile optimization tools.
             </p>
-            <div className="flex space-x-3 pt-2">
+            <div className="flex space-x-3 pt-2 ml-8">
               <a href="#" className="text-white/50 hover:text-primary transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
@@ -30,7 +30,7 @@ const Footer = () => {
             </div>
           </div>
           
-          {/* Column 2 - Quick Links (now centered) */}
+          {/* Column 2 - Quick Links (centered between columns 1 and 3) */}
           <div className="space-y-4 flex flex-col items-center text-center">
             <h3 className="text-lg font-semibold text-white">Quick Links</h3>
             <nav className="flex flex-col space-y-2">
