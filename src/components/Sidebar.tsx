@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { X, ChevronRight, User, Image, PenTool, GraduationCap, Briefcase, Star, Link, Users, MessageSquare, Search, Award, UserPlus, Bell } from "lucide-react";
+import { X, ChevronRight, User, Image, PenTool, GraduationCap, Briefcase, Star, Link, Users, MessageSquare, Search, Award, UserPlus, Bell, Mail, Zap, BarChart3, LineChart, Globe, Laptop, FileText, LucideIcon, BookOpen, Video, BadgeCheck, Lightbulb, Share2, HeartHandshake } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useToast } from "@/components/ui/use-toast";
@@ -148,7 +148,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
         { id: "picture", title: "Profile Picture", icon: Image },
         { id: "banner", title: "Custom Banner", icon: PenTool },
         { id: "headline", title: "Headline", icon: PenTool },
-        { id: "about", title: "About Section", icon: PenTool },
+        { id: "about", title: "About Section", icon: FileText },
         { id: "experience", title: "Experience", icon: Briefcase },
         { id: "education", title: "Education", icon: GraduationCap },
         { id: "featured", title: "Featured Section", icon: Star },
@@ -164,7 +164,9 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       subsections: [
         { id: "groups", title: "LinkedIn Groups", icon: Users },
         { id: "connect", title: "Whom to Connect With", icon: UserPlus },
-        { id: "requests", title: "Connection Requests", icon: MessageSquare }
+        { id: "requests", title: "Connection Requests", icon: MessageSquare },
+        { id: "growth", title: "Network Growth", icon: BarChart3 },
+        { id: "relationship", title: "Relationship Building", icon: HeartHandshake }
       ]
     },
     {
@@ -174,7 +176,9 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       subsections: [
         { id: "searchTips", title: "Search Tips", icon: Search },
         { id: "jobAlerts", title: "Job Alerts", icon: Bell },
-        { id: "tools", title: "Search Tools", icon: Search }
+        { id: "tools", title: "Search Tools", icon: Search },
+        { id: "tracker", title: "Application Tracker", icon: BarChart3 },
+        { id: "keywords", title: "Keywords Optimization", icon: FileText }
       ]
     },
     {
@@ -183,7 +187,10 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       icon: MessageSquare,
       subsections: [
         { id: "contact", title: "Finding Contacts", icon: Users },
-        { id: "cold", title: "Cold Emails", icon: MessageSquare }
+        { id: "cold", title: "Cold Emails", icon: MessageSquare },
+        { id: "followup", title: "Follow-up Templates", icon: FileText },
+        { id: "meetings", title: "Meeting Scheduler", icon: Calendar },
+        { id: "messaging", title: "Messaging Strategy", icon: MessageSquare }
       ]
     },
     {
@@ -191,7 +198,43 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       title: "Certifications",
       icon: Award,
       subsections: [
-        { id: "recommendations", title: "Recommendations", icon: Award }
+        { id: "recommendations", title: "Recommendations", icon: Award },
+        { id: "linkedin", title: "LinkedIn Learning", icon: Laptop },
+        { id: "industry", title: "Industry Badges", icon: BadgeCheck },
+        { id: "courses", title: "Course Selection", icon: BookOpen }
+      ]
+    },
+    {
+      id: "content",
+      title: "Content Creation",
+      icon: PenTool,
+      subsections: [
+        { id: "posts", title: "Post Optimization", icon: FileText },
+        { id: "articles", title: "Article Writing", icon: FileText },
+        { id: "video", title: "Video Content", icon: Video },
+        { id: "engagement", title: "Engagement Strategy", icon: Zap }
+      ]
+    },
+    {
+      id: "analytics",
+      title: "Profile Analytics",
+      icon: BarChart3,
+      subsections: [
+        { id: "insights", title: "Profile Insights", icon: LineChart },
+        { id: "visitors", title: "Profile Visitors", icon: Users },
+        { id: "reach", title: "Content Reach", icon: Globe },
+        { id: "trends", title: "Industry Trends", icon: LineChart }
+      ]
+    },
+    {
+      id: "branding",
+      title: "Personal Branding",
+      icon: Lightbulb,
+      subsections: [
+        { id: "strategy", title: "Brand Strategy", icon: Lightbulb },
+        { id: "consistency", title: "Brand Consistency", icon: Share2 },
+        { id: "niche", title: "Finding Your Niche", icon: Target },
+        { id: "storytelling", title: "Professional Storytelling", icon: BookOpen }
       ]
     }
   ];
@@ -213,7 +256,6 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
         } lg:relative lg:z-0`}
       >
         <div className="flex items-center justify-between h-16 px-4 border-b border-white/10">
-          <h2 className="text-base font-bold text-white truncate">Optimization Tools</h2>
           <button
             onClick={() => setIsOpen(false)}
             className="lg:hidden p-2 rounded-full hover:bg-white/5 transition-colors"

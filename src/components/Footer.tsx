@@ -27,8 +27,8 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="space-y-4">
+          {/* Quick Links - Now centered */}
+          <div className="space-y-4 text-center">
             <h3 className="text-lg font-semibold text-white">Quick Links</h3>
             <ul className="space-y-2">
               <li>
@@ -49,7 +49,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Information */}
+          {/* Connect With Me */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">Connect With Me</h3>
             <div className="flex space-x-4">

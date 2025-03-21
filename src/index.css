@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -235,7 +236,7 @@
   }
 }
 
-/* Fix "Optimization tools" text overflow issue */
+/* Fix text overflow issue in sidebar */
 @media (max-width: 1023px) {
   aside .h-16 {
     min-height: 4rem;
