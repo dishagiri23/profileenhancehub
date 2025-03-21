@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
@@ -37,18 +36,22 @@ const Layout = () => {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
-      {/* Sidebar for optimization tools */}
-      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
+      <Navbar setIsSidebarOpen={setIsSidebarOpen} />
       
-      {/* Main content */}
-      <div className="flex flex-col w-full min-h-screen">
-        <Navbar setIsSidebarOpen={setIsSidebarOpen} />
-        <main className="flex-grow page-transition-in pt-16">
-          <Outlet />
-        </main>
-        <Footer />
+      <div className="flex flex-1 w-full">
+        {/* Sidebar for optimization tools */}
+        <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+        
+        {/* Main content - centered */}
+        <div className="flex-1 mx-auto w-full max-w-screen-xl">
+          <main className="flex-grow page-transition-in pt-16">
+            <Outlet />
+          </main>
+        </div>
       </div>
+      
+      <Footer />
     </div>
   );
 };
