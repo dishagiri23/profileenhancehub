@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { X, ChevronRight, User, Image, PenTool, GraduationCap, Briefcase, Star, Link, Users, MessageSquare, Search, Award, UserPlus, Bell, Mail, Zap, BarChart3, LineChart, Globe, Laptop, FileText, LucideIcon, BookOpen, Video, BadgeCheck, Lightbulb, Share2, HeartHandshake } from "lucide-react";
+import { X, ChevronRight, User, Image, PenTool, GraduationCap, Briefcase, Star, Link, Users, MessageSquare, Search, Award, UserPlus, Bell, Mail, Zap, BarChart3, LineChart, Globe, Laptop, FileText, LucideIcon, BookOpen, Video, BadgeCheck, Lightbulb, Share2, HeartHandshake, Calendar, Target } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useToast } from "@/components/ui/use-toast";
