@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { AlignJustify, X, Linkedin, Search, LogOut, User } from "lucide-react";
+import { AlignJustify, X, Linkedin, Search, LogOut, User, Settings } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -143,6 +143,14 @@ const Navbar = ({ setIsSidebarOpen }: NavbarProps) => {
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="text-white/70 focus:text-white focus:bg-white/10 cursor-pointer"
+                    onClick={() => navigate("/profile")}
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Profile Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-white/10" />
+                  <DropdownMenuItem
+                    className="text-white/70 focus:text-white focus:bg-white/10 cursor-pointer"
                     onClick={handleLogout}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
@@ -198,6 +206,14 @@ const Navbar = ({ setIsSidebarOpen }: NavbarProps) => {
                     <User className="mr-2 h-4 w-4" />
                     <span>Dashboard</span>
                   </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-white/70 focus:text-white focus:bg-white/10 cursor-pointer"
+                    onClick={() => navigate("/profile")}
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Profile Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-white/10" />
                   <DropdownMenuItem
                     className="text-white/70 focus:text-white focus:bg-white/10 cursor-pointer"
                     onClick={handleLogout}

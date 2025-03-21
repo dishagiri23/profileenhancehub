@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { X, ChevronRight, User, Image, PenTool, GraduationCap, Briefcase, Star, Link, Users, MessageSquare, Search, Award, UserPlus, Bell, Mail, Zap, BarChart3, LineChart, Globe, Laptop, FileText, LucideIcon, BookOpen, Video, BadgeCheck, Lightbulb, Share2, HeartHandshake, Calendar, Target } from "lucide-react";
+import { X, ChevronRight, User, Image, PenTool, GraduationCap, Briefcase, Star, Link as LinkIcon, Users, MessageSquare, Search, Award, UserPlus, Bell, Mail, Zap, BarChart3, LineChart, Globe, Laptop, FileText, BookOpen, Video, BadgeCheck, Lightbulb, Share2, HeartHandshake, Calendar, Target, Shield, CreditCard, Settings, Lock, Eye, List, ListChecks } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useToast } from "@/components/ui/use-toast";
@@ -154,7 +154,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
         { id: "featured", title: "Featured Section", icon: Star },
         { id: "skills", title: "Skills", icon: Award },
         { id: "recommendations", title: "Recommendations", icon: MessageSquare },
-        { id: "customUrl", title: "Custom URL", icon: Link }
+        { id: "customUrl", title: "Custom URL", icon: LinkIcon }
       ]
     },
     {
@@ -235,6 +235,39 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
         { id: "consistency", title: "Brand Consistency", icon: Share2 },
         { id: "niche", title: "Finding Your Niche", icon: Target },
         { id: "storytelling", title: "Professional Storytelling", icon: BookOpen }
+      ]
+    },
+    {
+      id: "security",
+      title: "Privacy & Security",
+      icon: Shield,
+      subsections: [
+        { id: "privacySettings", title: "Privacy Settings", icon: Eye },
+        { id: "visibilityControl", title: "Visibility Control", icon: Eye },
+        { id: "dataProtection", title: "Data Protection", icon: Lock },
+        { id: "activityMonitoring", title: "Activity Monitoring", icon: LineChart }
+      ]
+    },
+    {
+      id: "premium",
+      title: "Premium Features",
+      icon: CreditCard,
+      subsections: [
+        { id: "inMail", title: "InMail Strategy", icon: Mail },
+        { id: "whoViewed", title: "Who Viewed Profile", icon: Users },
+        { id: "applicantInsights", title: "Applicant Insights", icon: BarChart3 },
+        { id: "resumeBuilder", title: "Resume Builder", icon: FileText }
+      ]
+    },
+    {
+      id: "accountManagement",
+      title: "Account Management",
+      icon: Settings,
+      subsections: [
+        { id: "accountSettings", title: "Account Settings", icon: Settings },
+        { id: "notificationPrefs", title: "Notification Preferences", icon: Bell },
+        { id: "emailSettings", title: "Email Settings", icon: Mail },
+        { id: "accountHealth", title: "Account Health Check", icon: ListChecks }
       ]
     }
   ];
