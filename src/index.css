@@ -238,11 +238,59 @@
     min-height: 4rem;
   }
   
-  aside .h-16 h2.text-lg {
-    font-size: 1rem;
-    max-width: 70%;
+  aside .h-16 h2.text-lg, aside .h-16 h2.text-base {
+    font-size: 0.9rem;
+    max-width: 80%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+}
+
+/* Make sure sidebar buttons are responsive */
+@media (max-width: 374px) {
+  aside button span, 
+  aside .text-sm {
+    font-size: 0.8rem;
+  }
+  
+  aside .w-80 {
+    width: 80%;
+  }
+}
+
+/* Fix layout when sidebar and content are shown together */
+@media (min-width: 1024px) {
+  .flex.min-h-screen > div.flex-col {
+    margin-left: 20rem; /* Width of sidebar */
+    width: calc(100% - 20rem);
+  }
+  
+  aside.w-80 {
+    width: 20rem;
+  }
+}
+
+/* Fix for dialogs on mobile */
+@media (max-width: 640px) {
+  .fixed.inset-0.z-50 > div[role="dialog"] {
+    width: 95%;
+    max-width: 95%;
+    margin: 0 auto;
+  }
+}
+
+/* Fix tabs on small screens */
+@media (max-width: 767px) {
+  .grid.grid-cols-3.md\:grid-cols-6 {
+    grid-template-columns: repeat(3, 1fr);
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid.grid-cols-3.md\:grid-cols-6 [data-state="active"] {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.25rem;
   }
 }

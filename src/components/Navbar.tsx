@@ -86,17 +86,17 @@ const Navbar = ({ setIsSidebarOpen }: NavbarProps) => {
             </Button>
             <Link
               to="/"
-              className="flex items-center space-x-2 text-xl font-bold text-white group"
+              className="flex items-center space-x-1 sm:space-x-2 text-lg sm:text-xl font-bold text-white group"
             >
-              <Linkedin className="h-7 w-7 text-primary group-hover:animate-pulse-soft transition-all duration-300" />
-              <span className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+              <Linkedin className="h-6 w-6 sm:h-7 sm:w-7 text-primary group-hover:animate-pulse-soft transition-all duration-300" />
+              <span className="bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent truncate">
                 ProfileEnhanceHub
               </span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
@@ -121,7 +121,7 @@ const Navbar = ({ setIsSidebarOpen }: NavbarProps) => {
                     <Avatar className="h-8 w-8 border border-primary/30">
                       <AvatarImage src={userData.imageUrl || ""} alt={userData.name} />
                       <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                        {userData.name.substring(0, 2).toUpperCase()}
+                        {userData.name ? userData.name.substring(0, 2).toUpperCase() : "??"}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -178,7 +178,7 @@ const Navbar = ({ setIsSidebarOpen }: NavbarProps) => {
                     <Avatar className="h-8 w-8 border border-primary/30">
                       <AvatarImage src={userData.imageUrl || ""} alt={userData.name} />
                       <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                        {userData.name.substring(0, 2).toUpperCase()}
+                        {userData.name ? userData.name.substring(0, 2).toUpperCase() : "??"}
                       </AvatarFallback>
                     </Avatar>
                   </Button>

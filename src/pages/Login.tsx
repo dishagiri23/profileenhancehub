@@ -25,6 +25,8 @@ const Login = () => {
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [isResetting, setIsResetting] = useState(false);
+  const [resetSuccess, setResetSuccess] = useState(false);
+  const [resetPassword, setResetPassword] = useState("");
 
   // Validate email
   const validateEmail = (email: string) => {
@@ -90,7 +92,11 @@ const Login = () => {
         email: user.email,
         profileUrl: user.profileUrl || "",
         imageUrl: user.imageUrl || "",
-        signUpMethod: "Email"
+        signUpMethod: user.signUpMethod || "Email",
+        githubUsername: user.githubUsername || "",
+        twitterUsername: user.twitterUsername || "",
+        googleAccount: user.googleAccount || "",
+        linkedinUsername: user.linkedinUsername || ""
       };
       
       localStorage.setItem("userData", JSON.stringify(userData));
@@ -120,36 +126,53 @@ const Login = () => {
       // Create mock user data for demo purposes with a valid looking email
       let mockEmail = "";
       let mockName = "";
+      let mockUsername = "";
       
       switch(provider) {
         case "Google":
           mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@gmail.com";
           mockName = "Google User";
+          mockUsername = "googleuser" + Math.floor(Math.random() * 10000);
           break;
         case "GitHub":
           mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@github.com";
           mockName = "GitHub User";
+          mockUsername = "githubuser" + Math.floor(Math.random() * 10000);
           break;
         case "LinkedIn":
           mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@linkedin.com";
           mockName = "LinkedIn User";
+          mockUsername = "linkedinuser" + Math.floor(Math.random() * 10000);
           break;
         case "Twitter":
           mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@twitter.com";
           mockName = "Twitter User";
+          mockUsername = "twitteruser" + Math.floor(Math.random() * 10000);
           break;
         default:
           mockEmail = "user_" + Math.floor(Math.random() * 10000) + "@example.com";
           mockName = "Social User";
+          mockUsername = "socialuser" + Math.floor(Math.random() * 10000);
       }
       
-      const userData = {
+      const userData: any = {
         name: mockName,
         email: mockEmail,
         profileUrl: "",
         imageUrl: "",
         signUpMethod: provider
       };
+      
+      // Add specific social media info
+      if (provider === "GitHub") {
+        userData.githubUsername = mockUsername;
+      } else if (provider === "Twitter") {
+        userData.twitterUsername = mockUsername;
+      } else if (provider === "LinkedIn") {
+        userData.linkedinUsername = mockUsername;
+      } else if (provider === "Google") {
+        userData.googleAccount = mockEmail;
+      }
       
       // Save to users array too for consistency
       const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
@@ -213,35 +236,60 @@ const Login = () => {
         return;
       }
       
-      // Simulate sending reset email
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Show reset password UI
+      setResetSuccess(true);
       
-      // Reset password to a default for demo purposes
-      const updatedUsers = storedUsers.map((u: any) => {
-        if (u.email === resetEmail) {
-          return { ...u, password: "Password123" };
-        }
-        return u;
-      });
-      
-      localStorage.setItem("users", JSON.stringify(updatedUsers));
-      
-      toast({
-        title: "Password reset successful",
-        description: "Your password has been reset to 'Password123'. Please login with this new password.",
-        duration: 7000,
-      });
-      
-      setForgotPasswordOpen(false);
-      setResetEmail("");
     } catch (error) {
       toast({
         title: "Password reset failed",
         description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setIsResetting(false);
+    }
+  };
+
+  const completePasswordReset = () => {
+    if (!resetPassword || resetPassword.length < 6) {
+      toast({
+        title: "Invalid password",
+        description: "Password must be at least 6 characters long",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    try {
+      // Update user's password
+      const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+      const updatedUsers = storedUsers.map((u: any) => {
+        if (u.email === resetEmail) {
+          return { ...u, password: resetPassword };
+        }
+        return u;
+      });
+      
+      localStorage.setItem("users", JSON.stringify(updatedUsers));
+      
+      // Reset states
+      setForgotPasswordOpen(false);
+      setResetEmail("");
+      setResetPassword("");
+      setResetSuccess(false);
+      setIsResetting(false);
+      
+      toast({
+        title: "Password reset successful",
+        description: "Your password has been reset. Please login with your new password.",
+        duration: 5000,
+      });
+      
+    } catch (error) {
+      toast({
+        title: "Password reset failed",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -350,6 +398,7 @@ const Login = () => {
                   onClick={() => {
                     setResetEmail(email); // Pre-fill with current email if any
                     setForgotPasswordOpen(true);
+                    setResetSuccess(false);
                   }}
                 >
                   Forgot password?
@@ -385,50 +434,97 @@ const Login = () => {
       </motion.div>
       
       {/* Forgot Password Dialog */}
-      <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
+      <Dialog open={forgotPasswordOpen} onOpenChange={(open) => {
+        setForgotPasswordOpen(open);
+        if (!open) {
+          setResetSuccess(false);
+          setResetPassword("");
+        }
+      }}>
         <DialogContent className="bg-black/90 border border-white/10 text-white">
           <DialogHeader>
-            <DialogTitle className="text-white">Reset Password</DialogTitle>
+            <DialogTitle className="text-white">{resetSuccess ? "Set New Password" : "Reset Password"}</DialogTitle>
             <DialogDescription className="text-white/70">
-              Enter your email address and we'll reset your password.
+              {resetSuccess 
+                ? "Enter your new password below."
+                : "Enter your email address and we'll send you a link to reset your password."}
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleForgotPassword}>
+          
+          {!resetSuccess ? (
+            <form onSubmit={handleForgotPassword}>
+              <div className="space-y-4 py-2">
+                <div className="space-y-2">
+                  <label htmlFor="reset-email" className="text-sm font-medium text-white/70">
+                    Email Address
+                  </label>
+                  <Input
+                    id="reset-email"
+                    type="email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    className="bg-white/5 border-white/10 text-white focus-visible:ring-primary/40"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+              </div>
+              <DialogFooter className="mt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="bg-white/5 border-white/10 text-white"
+                  onClick={() => setForgotPasswordOpen(false)}
+                  disabled={isResetting}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-primary hover:bg-primary/90 text-white"
+                  disabled={isResetting}
+                >
+                  {isResetting ? "Verifying..." : "Reset Password"}
+                </Button>
+              </DialogFooter>
+            </form>
+          ) : (
             <div className="space-y-4 py-2">
               <div className="space-y-2">
-                <label htmlFor="reset-email" className="text-sm font-medium text-white/70">
-                  Email Address
+                <label htmlFor="new-password" className="text-sm font-medium text-white/70">
+                  New Password
                 </label>
                 <Input
-                  id="reset-email"
-                  type="email"
-                  value={resetEmail}
-                  onChange={(e) => setResetEmail(e.target.value)}
+                  id="new-password"
+                  type="password"
+                  value={resetPassword}
+                  onChange={(e) => setResetPassword(e.target.value)}
                   className="bg-white/5 border-white/10 text-white focus-visible:ring-primary/40"
-                  placeholder="Enter your email"
+                  placeholder="Enter your new password"
+                  minLength={6}
                   required
                 />
+                <p className="text-xs text-white/50">Password must be at least 6 characters</p>
               </div>
+              <DialogFooter className="mt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="bg-white/5 border-white/10 text-white"
+                  onClick={() => setForgotPasswordOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  className="bg-primary hover:bg-primary/90 text-white"
+                  onClick={completePasswordReset}
+                >
+                  Save New Password
+                </Button>
+              </DialogFooter>
             </div>
-            <DialogFooter className="mt-4">
-              <Button
-                type="button"
-                variant="outline"
-                className="bg-white/5 border-white/10 text-white"
-                onClick={() => setForgotPasswordOpen(false)}
-                disabled={isResetting}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="bg-primary hover:bg-primary/90 text-white"
-                disabled={isResetting}
-              >
-                {isResetting ? "Resetting..." : "Reset Password"}
-              </Button>
-            </DialogFooter>
-          </form>
+          )}
         </DialogContent>
       </Dialog>
     </div>

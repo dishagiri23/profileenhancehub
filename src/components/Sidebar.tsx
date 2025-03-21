@@ -66,7 +66,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     
     setIsAnalyzing(true);
     
-    // Save URL to localStorage
+    // Save URL to localStorage with the user data
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
     userData.profileUrl = profileUrl;
     localStorage.setItem("userData", JSON.stringify(userData));
@@ -87,7 +87,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       
       // Navigate to dashboard with the analyzed profile
       navigate("/dashboard");
-    }, 2000);
+    }, 1500);
   };
 
   const handleSectionItemClick = (section: string, subsection: string) => {
@@ -118,7 +118,19 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       description: "Your profile is being optimized...",
     });
     
-    // Navigate to appropriate service section with query params
+    // Update user data to include this optimized section
+    const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+    if (!userData.optimizedSections) {
+      userData.optimizedSections = [];
+    }
+    
+    // Add this section if not already optimized
+    if (!userData.optimizedSections.includes(subsection)) {
+      userData.optimizedSections.push(subsection);
+      localStorage.setItem("userData", JSON.stringify(userData));
+    }
+    
+    // Navigate to service page with specific query parameters for optimization
     navigate(`/services?section=${section}&subsection=${subsection}&optimize=true`);
     
     // Close sidebar on mobile after selection
@@ -200,8 +212,8 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         } lg:relative lg:z-0`}
       >
-        <div className="flex items-center justify-between h-16 px-6 border-b border-white/10">
-          <h2 className="text-lg font-bold text-white">Optimization Tools</h2>
+        <div className="flex items-center justify-between h-16 px-4 border-b border-white/10">
+          <h2 className="text-base font-bold text-white truncate">Optimization Tools</h2>
           <button
             onClick={() => setIsOpen(false)}
             className="lg:hidden p-2 rounded-full hover:bg-white/5 transition-colors"

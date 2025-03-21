@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Briefcase, UserCheck, MessageSquare, Award, Settings, BarChart, User, FileText } from "lucide-react";
+import { Briefcase, UserCheck, MessageSquare, Award, Settings, BarChart, User, FileText, Github, Linkedin, Twitter } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 const Dashboard = () => {
@@ -20,6 +20,10 @@ const Dashboard = () => {
     imageUrl: string;
     signUpMethod: string;
     optimizedSections?: string[];
+    githubUsername?: string;
+    twitterUsername?: string;
+    googleAccount?: string;
+    linkedinUsername?: string;
   } | null>(null);
 
   // Check if user is logged in
@@ -88,7 +92,7 @@ const Dashboard = () => {
             <Avatar className="h-16 w-16 border-2 border-primary/30">
               <AvatarImage src={userData.imageUrl || ""} alt={userData.name} />
               <AvatarFallback className="bg-primary/10 text-primary text-lg">
-                {userData.name.substring(0, 2).toUpperCase()}
+                {userData.name?.substring(0, 2).toUpperCase() || "U"}
               </AvatarFallback>
             </Avatar>
             <div>
@@ -112,6 +116,59 @@ const Dashboard = () => {
             </p>
           </div>
         </div>
+
+        {/* Social Accounts */}
+        {(userData.githubUsername || userData.twitterUsername || userData.linkedinUsername || userData.googleAccount) && (
+          <div className="glass-card rounded-xl p-6 mb-6">
+            <h3 className="text-xl font-semibold mb-4 text-white">Connected Accounts</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              {userData.githubUsername && (
+                <div className="flex items-center gap-3 bg-black/30 p-3 rounded-lg">
+                  <Github className="h-5 w-5 text-white" />
+                  <div>
+                    <p className="text-white font-medium">GitHub</p>
+                    <p className="text-white/70 text-sm truncate">{userData.githubUsername}</p>
+                  </div>
+                </div>
+              )}
+              
+              {userData.twitterUsername && (
+                <div className="flex items-center gap-3 bg-black/30 p-3 rounded-lg">
+                  <Twitter className="h-5 w-5 text-white" />
+                  <div>
+                    <p className="text-white font-medium">Twitter</p>
+                    <p className="text-white/70 text-sm truncate">{userData.twitterUsername}</p>
+                  </div>
+                </div>
+              )}
+              
+              {userData.linkedinUsername && (
+                <div className="flex items-center gap-3 bg-black/30 p-3 rounded-lg">
+                  <Linkedin className="h-5 w-5 text-white" />
+                  <div>
+                    <p className="text-white font-medium">LinkedIn</p>
+                    <p className="text-white/70 text-sm truncate">{userData.linkedinUsername}</p>
+                  </div>
+                </div>
+              )}
+              
+              {userData.googleAccount && (
+                <div className="flex items-center gap-3 bg-black/30 p-3 rounded-lg">
+                  <svg className="h-5 w-5 text-white" viewBox="0 0 24 24">
+                    <path
+                      fill="currentColor"
+                      d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C8.36,19.27 5,16.25 5,12C5,7.9 8.2,4.73 12.2,4.73C15.29,4.73 17.1,6.7 17.1,6.7L19,4.72C19,4.72 16.56,2 12.1,2C6.42,2 2.03,6.8 2.03,12C2.03,17.05 6.16,22 12.25,22C17.6,22 21.5,18.33 21.5,12.91C21.5,11.76 21.35,11.1 21.35,11.1Z"
+                    />
+                  </svg>
+                  <div>
+                    <p className="text-white font-medium">Google</p>
+                    <p className="text-white/70 text-sm truncate">{userData.googleAccount}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Dashboard Content */}
         <Tabs defaultValue="overview" className="w-full">
@@ -277,11 +334,11 @@ const Dashboard = () => {
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-white/80">Name</p>
-                    <p className="text-white">{userData.name}</p>
+                    <p className="text-white">{userData.name || "Not provided"}</p>
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-white/80">Email</p>
-                    <p className="text-white">{userData.email}</p>
+                    <p className="text-white">{userData.email || "Not provided"}</p>
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-white/80">LinkedIn Profile</p>
@@ -289,8 +346,36 @@ const Dashboard = () => {
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-white/80">Login Method</p>
-                    <p className="text-white">{userData.signUpMethod}</p>
+                    <p className="text-white">{userData.signUpMethod || "Email"}</p>
                   </div>
+                  
+                  {userData.githubUsername && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-white/80">GitHub Username</p>
+                      <p className="text-white">{userData.githubUsername}</p>
+                    </div>
+                  )}
+                  
+                  {userData.twitterUsername && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-white/80">Twitter Username</p>
+                      <p className="text-white">{userData.twitterUsername}</p>
+                    </div>
+                  )}
+                  
+                  {userData.linkedinUsername && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-white/80">LinkedIn Username</p>
+                      <p className="text-white">{userData.linkedinUsername}</p>
+                    </div>
+                  )}
+                  
+                  {userData.googleAccount && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium text-white/80">Google Account</p>
+                      <p className="text-white">{userData.googleAccount}</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -355,9 +440,10 @@ const Dashboard = () => {
                       variant="outline" 
                       className="mt-2 bg-white/5 hover:bg-white/10 border-white/10"
                       onClick={() => {
+                        navigate("/login");
                         toast({
-                          title: "Feature coming soon",
-                          description: "Password reset will be available soon.",
+                          title: "Password Reset",
+                          description: "Use the 'Forgot password?' link on the login page to reset your password.",
                         });
                       }}
                     >

@@ -9,9 +9,11 @@ const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
 
-  // Close sidebar when changing routes
+  // Close sidebar when changing routes on mobile
   useEffect(() => {
-    setIsSidebarOpen(false);
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
   }, [location.pathname]);
 
   // Handle sidebar visibility based on screen size
@@ -42,7 +44,7 @@ const Layout = () => {
       {/* Main content */}
       <div className="flex flex-col w-full min-h-screen">
         <Navbar setIsSidebarOpen={setIsSidebarOpen} />
-        <main className="flex-grow page-transition-in">
+        <main className="flex-grow page-transition-in pt-16">
           <Outlet />
         </main>
         <Footer />
