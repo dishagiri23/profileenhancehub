@@ -14,10 +14,10 @@ const Footer = () => {
               <Linkedin className="h-6 w-6 text-primary" />
               <h3 className="text-lg font-bold text-white">ProfileEnhanceHub</h3>
             </div>
-            <p className="text-white/70 text-sm max-w-xs ml-8">
+            <p className="text-white/70 text-sm max-w-xs ml-4">
               Elevate your professional presence with our AI-powered LinkedIn profile optimization tools.
             </p>
-            <div className="flex space-x-3 pt-2 ml-8">
+            <div className="flex space-x-3 pt-2 ml-4">
               <a href="#" className="text-white/50 hover:text-primary transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
@@ -48,8 +48,8 @@ const Footer = () => {
             <p className="text-white/70 text-sm">
               Ready to transform your professional image? Let's get started today!
             </p>
-            <Link to="/contact">
-              <Button className="bg-primary hover:bg-primary/90 text-white">
+            <Link to="/contact" className="mt-4 inline-block">
+              <Button className="bg-primary hover:bg-primary/90 text-white mt-2">
                 Contact Us
               </Button>
             </Link>
