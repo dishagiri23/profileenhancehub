@@ -1,4 +1,3 @@
-
 import { useState, useEffect, ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
@@ -45,11 +44,11 @@ const Layout = ({ children }: LayoutProps) => {
       <Navbar setIsSidebarOpen={setIsSidebarOpen} />
       
       <div className="flex flex-1 w-full">
-        {/* Sidebar for optimization tools - moved further left by removing default padding */}
+        {/* Sidebar for optimization tools - moved further left */}
         <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
         
-        {/* Main content - with increased left padding */}
-        <div className="flex-1 mx-auto w-full max-w-screen-xl pl-6 lg:pl-10">
+        {/* Main content - with increased left padding for better alignment */}
+        <div className="flex-1 mx-auto w-full max-w-screen-xl pl-8 lg:pl-16">
           <main className="flex-grow page-transition-in pt-16">
             {children}
           </main>

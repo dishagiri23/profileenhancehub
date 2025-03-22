@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Linkedin, Mail, Twitter } from "lucide-react";
+import { Linkedin, Mail, Twitter, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Footer = () => {
@@ -14,10 +14,10 @@ const Footer = () => {
               <Linkedin className="h-6 w-6 text-primary" />
               <h3 className="text-lg font-bold text-white">ProfileEnhanceHub</h3>
             </div>
-            <p className="text-white/70 text-sm max-w-xs ml-4">
+            <p className="text-white/70 text-sm max-w-xs ml-2">
               Elevate your professional presence with our AI-powered LinkedIn profile optimization tools.
             </p>
-            <div className="flex space-x-3 pt-2 ml-4">
+            <div className="flex space-x-3 pt-2 ml-2">
               <a href="#" className="text-white/50 hover:text-primary transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
@@ -48,8 +48,8 @@ const Footer = () => {
             <p className="text-white/70 text-sm">
               Ready to transform your professional image? Let's get started today!
             </p>
-            <Link to="/contact" className="mt-4 inline-block">
-              <Button className="bg-primary hover:bg-primary/90 text-white mt-2">
+            <Link to="/contact" className="mt-6 inline-block">
+              <Button className="bg-primary hover:bg-primary/90 text-white mt-3">
                 Contact Us
               </Button>
             </Link>

@@ -199,10 +199,10 @@ const Contact = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div>
-              <h2 className="text-2xl font-semibold mb-6 text-white">Contact Information</h2>
-              <div className="space-y-4">
+              <h2 className="text-2xl font-semibold mb-6 text-white pl-4">Contact Information</h2>
+              <div className="space-y-4 pl-4">
                 <div className="flex items-start">
-                  <Mail className="h-5 w-5 text-primary mr-3 mt-0.5" />
+                  <Mail className="h-5 w-5 text-primary mr-4 mt-0.5" />
                   <div>
                     <p className="text-sm font-medium text-white mb-1">Email</p>
                     <a href="mailto:dishagiri09170@gmail.com" className="text-white/70 hover:text-white transition-colors">
@@ -212,7 +212,7 @@ const Contact = () => {
                 </div>
                 
                 <div className="flex items-start">
-                  <Phone className="h-5 w-5 text-primary mr-3 mt-0.5" />
+                  <Phone className="h-5 w-5 text-primary mr-4 mt-0.5" />
                   <div>
                     <p className="text-sm font-medium text-white mb-1">Phone</p>
                     <p className="text-white/70">+91 XXX XXX XXXX</p>
@@ -220,7 +220,7 @@ const Contact = () => {
                 </div>
                 
                 <div className="flex items-start">
-                  <MapPin className="h-5 w-5 text-primary mr-3 mt-0.5" />
+                  <MapPin className="h-5 w-5 text-primary mr-4 mt-0.5" />
                   <div>
                     <p className="text-sm font-medium text-white mb-1">Location</p>
                     <p className="text-white/70">India</p>
@@ -230,8 +230,8 @@ const Contact = () => {
             </div>
             
             <div>
-              <h2 className="text-2xl font-semibold mb-6 text-white">Connect With Me</h2>
-              <div className="flex space-x-4">
+              <h2 className="text-2xl font-semibold mb-6 text-white pl-4">Connect With Me</h2>
+              <div className="flex space-x-4 pl-4">
                 <a
                   href="https://www.linkedin.com/in/disha-giri-414a72314/"
                   target="_blank"
